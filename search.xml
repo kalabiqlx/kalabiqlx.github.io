@@ -1549,6 +1549,7 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
 ]]></content>
       <categories>
         <category>论文</category>
+        <category>NLP</category>
       </categories>
   </entry>
   <entry>
@@ -1808,14 +1809,15 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
 ]]></content>
       <categories>
         <category>论文</category>
+        <category>CV</category>
       </categories>
   </entry>
   <entry>
-    <title>NLP课程（一）</title>
+    <title>NLP课程（一）- 介绍</title>
     <url>/2024/09/20/NLP_Course(1)/</url>
     <content><![CDATA[<p>转载自：<a href="https://huggingface.co/learn/nlp-course/zh-CN/">https://huggingface.co/learn/nlp-course/zh-CN/</a></p>
-<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有词系列文章。</strong></p>
-<h1 id="nlp课程一"><a class="markdownIt-Anchor" href="#nlp课程一"></a> NLP课程（一）</h1>
+<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有此系列文章。</strong></p>
+<h1 id="nlp课程一-介绍"><a class="markdownIt-Anchor" href="#nlp课程一-介绍"></a> NLP课程（一）- 介绍</h1>
 <h2 id="常见nlp任务"><a class="markdownIt-Anchor" href="#常见nlp任务"></a> 常见NLP任务</h2>
 <p>常见 NLP 任务的列表，每个任务都有一些示例：</p>
 <ul>
@@ -1895,11 +1897,11 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">�
       </categories>
   </entry>
   <entry>
-    <title>NLP课程（二）</title>
+    <title>NLP课程（二）- Transformers的使用</title>
     <url>/2024/09/20/NLP_Course(2)/</url>
     <content><![CDATA[<p>转载自：<a href="https://huggingface.co/learn/nlp-course/zh-CN/">https://huggingface.co/learn/nlp-course/zh-CN/</a></p>
-<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有词系列文章。</strong></p>
-<h1 id="nlp课程二"><a class="markdownIt-Anchor" href="#nlp课程二"></a> NLP课程（二）</h1>
+<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有此系列文章。</strong></p>
+<h1 id="nlp课程二-transformers的使用"><a class="markdownIt-Anchor" href="#nlp课程二-transformers的使用"></a> NLP课程（二）- Transformers的使用</h1>
 <h2 id="pipline的内部"><a class="markdownIt-Anchor" href="#pipline的内部"></a> pipline的内部</h2>
 <p><strong>示例：</strong></p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> pipeline</span><br><span class="line"></span><br><span class="line">classifier = pipeline(<span class="string">&quot;sentiment-analysis&quot;</span>)</span><br><span class="line">classifier(</span><br><span class="line">    [</span><br><span class="line">        <span class="string">&quot;I&#x27;ve been waiting for a HuggingFace course my whole life.&quot;</span>,</span><br><span class="line">        <span class="string">&quot;I hate this so much!&quot;</span>,</span><br><span class="line">    ]</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
@@ -2082,11 +2084,11 @@ input_ids = torch.tensor(ids)</p>
       </categories>
   </entry>
   <entry>
-    <title>NLP课程（三）</title>
+    <title>NLP课程（三）- 微调预训练模型</title>
     <url>/2024/09/20/NLP_Course(3)/</url>
     <content><![CDATA[<p>转载自：<a href="https://huggingface.co/learn/nlp-course/zh-CN/">https://huggingface.co/learn/nlp-course/zh-CN/</a></p>
-<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有词系列文章。</strong></p>
-<h1 id="nlp课程三"><a class="markdownIt-Anchor" href="#nlp课程三"></a> NLP课程（三）</h1>
+<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有此系列文章。</strong></p>
+<h1 id="nlp课程三-微调预训练模型"><a class="markdownIt-Anchor" href="#nlp课程三-微调预训练模型"></a> NLP课程（三）- 微调预训练模型</h1>
 <h2 id="预处理数据"><a class="markdownIt-Anchor" href="#预处理数据"></a> 预处理数据</h2>
 <h3 id="1-加载数据集"><a class="markdownIt-Anchor" href="#1-加载数据集"></a> 1. 加载数据集</h3>
 <p>以MRPC（微软研究释义语料库）数据集作为示例，该数据集由威廉·多兰和克里斯·布罗克特在<a href="https://www.aclweb.org/anthology/I05-5002.pdf">这篇文章</a>发布。<font color="red">该数据集由5801对句子组成，每个句子对带有一个标签，指示它们是否为同义（即，如果两个句子的意思相同）。</font></p>
@@ -2253,11 +2255,11 @@ input_ids = torch.tensor(ids)</p>
       </categories>
   </entry>
   <entry>
-    <title>NLP课程（六-中）</title>
+    <title>NLP课程（六-中）- 三种标记化</title>
     <url>/2024/09/20/NLP_Course(6.2)/</url>
     <content><![CDATA[<p>转载自：<a href="https://huggingface.co/learn/nlp-course/zh-CN/">https://huggingface.co/learn/nlp-course/zh-CN/</a></p>
-<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有词系列文章。</strong></p>
-<h1 id="nlp课程六-中"><a class="markdownIt-Anchor" href="#nlp课程六-中"></a> NLP课程（六-中）</h1>
+<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有此系列文章。</strong></p>
+<h1 id="nlp课程六-中-三种标记化"><a class="markdownIt-Anchor" href="#nlp课程六-中-三种标记化"></a> NLP课程（六-中）- 三种标记化</h1>
 <h2 id="字节对编码标记化bpe"><a class="markdownIt-Anchor" href="#字节对编码标记化bpe"></a> 字节对编码标记化(BPE)</h2>
 <p>字节对编码(BPE)最初被开发为一种压缩文本的算法,然后在预训练 GPT 模型时被 OpenAI 用于标记化。许多 Transformer 模型都使用它,包括 GPT、GPT-2、RoBERTa、BART 和 DeBERTa。</p>
 <h3 id="1训练算法"><a class="markdownIt-Anchor" href="#1训练算法"></a> 1.训练算法</h3>
@@ -2524,11 +2526,11 @@ input_ids = torch.tensor(ids)</p>
       </categories>
   </entry>
   <entry>
-    <title>NLP课程（六-下）</title>
+    <title>NLP课程（六-下）- 逐块构建分词器</title>
     <url>/2024/09/20/NLP_Course(6.3)/</url>
     <content><![CDATA[<p>转载自：<a href="https://huggingface.co/learn/nlp-course/zh-CN/">https://huggingface.co/learn/nlp-course/zh-CN/</a></p>
-<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有词系列文章。</strong></p>
-<h1 id="nlp课程六-下"><a class="markdownIt-Anchor" href="#nlp课程六-下"></a> NLP课程（六-下）</h1>
+<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有此系列文章。</strong></p>
+<h1 id="nlp课程六-下-逐块构建分词器"><a class="markdownIt-Anchor" href="#nlp课程六-下-逐块构建分词器"></a> NLP课程（六-下）- 逐块构建分词器</h1>
 <h2 id="逐块构建分词器"><a class="markdownIt-Anchor" href="#逐块构建分词器"></a> 逐块构建分词器</h2>
 <p>正如我们在前面几节中所看到的，标记化包括几个步骤：</p>
 <ul>
@@ -2706,10 +2708,10 @@ input_ids = torch.tensor(ids)</p>
       </categories>
   </entry>
   <entry>
-    <title>NLP课程（六-上）</title>
+    <title>NLP课程（六-上）- Tokenizer库</title>
     <url>/2024/09/20/NLP_Course(6.1)/</url>
     <content><![CDATA[<p>转载自：<a href="https://huggingface.co/learn/nlp-course/zh-CN/">https://huggingface.co/learn/nlp-course/zh-CN/</a></p>
-<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有词系列文章。</strong></p>
+<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有此系列文章。</strong></p>
 <h1 id="nlp课程六-上-tokenizer库"><a class="markdownIt-Anchor" href="#nlp课程六-上-tokenizer库"></a> NLP课程（六-上）- Tokenizer库</h1>
 <h2 id="根据已有的tokenizer训练新的tokenizer"><a class="markdownIt-Anchor" href="#根据已有的tokenizer训练新的tokenizer"></a> 根据已有的tokenizer训练新的tokenizer</h2>
 <h3 id="1准备语料库"><a class="markdownIt-Anchor" href="#1准备语料库"></a> 1.准备语料库</h3>
@@ -3028,11 +3030,11 @@ input_ids = torch.tensor(ids)</p>
       </categories>
   </entry>
   <entry>
-    <title>NLP课程（七/一）</title>
+    <title>NLP课程（七/一）- Token分类</title>
     <url>/2024/09/20/NLP_Course(7.1)/</url>
     <content><![CDATA[<p>转载自：<a href="https://huggingface.co/learn/nlp-course/zh-CN/">https://huggingface.co/learn/nlp-course/zh-CN/</a></p>
-<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有词系列文章。</strong></p>
-<h1 id="nlp课程71-token分类"><a class="markdownIt-Anchor" href="#nlp课程71-token分类"></a> NLP课程（7.1）-Token分类</h1>
+<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有此系列文章。</strong></p>
+<h1 id="nlp课程71-token分类"><a class="markdownIt-Anchor" href="#nlp课程71-token分类"></a> NLP课程（7.1）- Token分类</h1>
 <p>我们将探索的第一个应用程序是令牌分类。这个通用任务包含任何可以表述为“为句子中的每个标记分配标签”的问题，例如：</p>
 <ul>
 <li><strong>命名实体识别（NER）</strong> ：查找句子中的实体（例如人、位置或组织）。这可以表述为通过每个实体一个类和“无实体”一个类来为每个标记分配一个标签。</li>
@@ -3205,10 +3207,10 @@ input_ids = torch.tensor(ids)</p>
       </categories>
   </entry>
   <entry>
-    <title>NLP课程（五）</title>
+    <title>NLP课程（五）- Datasets库</title>
     <url>/2024/09/20/NLP_Course(5)/</url>
     <content><![CDATA[<p>转载自：<a href="https://huggingface.co/learn/nlp-course/zh-CN/">https://huggingface.co/learn/nlp-course/zh-CN/</a></p>
-<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有词系列文章。</strong></p>
+<p><strong>原中文文档有很多地方翻译的太敷衍了，因此才有此系列文章。</strong></p>
 <h1 id="nlp课程五-datasets库"><a class="markdownIt-Anchor" href="#nlp课程五-datasets库"></a> NLP课程（五）- Datasets库</h1>
 <p>在微调模型时有三个主要步骤：</p>
 <ol>
