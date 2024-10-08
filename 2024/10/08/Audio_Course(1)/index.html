@@ -1,0 +1,462 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Audio课程（一）- 音频数据处理 | HUI</title><meta name="author" content="HUI"><meta name="copyright" content="HUI"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="转载自：https:&#x2F;&#x2F;huggingface.co&#x2F;learn&#x2F;audio-course&#x2F;en&#x2F;  Audio课程（一）- 音频数据处理  音频数据处理入门 声波在本质上是一种连续信号，这意味着在一段给定时间内的声音信号有无数个取值。对于只能读取有限长数组的数字计算机来说，这是一个重要的问题。为了使得数字设备能够处理、储存和传送声波，我们需要将连续的声音信号转换为一个离散的序列。我们称之为数字化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Audio课程（一）- 音频数据处理">
+<meta property="og:url" content="http://example.com/2024/10/08/Audio_Course(1)/index.html">
+<meta property="og:site_name" content="HUI">
+<meta property="og:description" content="转载自：https:&#x2F;&#x2F;huggingface.co&#x2F;learn&#x2F;audio-course&#x2F;en&#x2F;  Audio课程（一）- 音频数据处理  音频数据处理入门 声波在本质上是一种连续信号，这意味着在一段给定时间内的声音信号有无数个取值。对于只能读取有限长数组的数字计算机来说，这是一个重要的问题。为了使得数字设备能够处理、储存和传送声波，我们需要将连续的声音信号转换为一个离散的序列。我们称之为数字化">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/43670b.png">
+<meta property="article:published_time" content="2024-10-08T14:30:33.000Z">
+<meta property="article:modified_time" content="2024-10-08T14:27:56.888Z">
+<meta property="article:author" content="HUI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/43670b.png"><link rel="shortcut icon" href="/img/122061154_p0_master1200.jpg"><link rel="canonical" href="http://example.com/2024/10/08/Audio_Course(1)/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Audio课程（一）- 音频数据处理',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-08 22:27:56'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/bronya.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/87788970_p0_master1200.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">33</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/43670b.png')"><nav id="nav"><span id="blog-info"><a href="/" title="HUI"><img class="site-icon" src="/img/319E33068A7ED73BAE7EB48FCE321DD4.jpg"/><span class="site-name">HUI</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Audio课程（一）- 音频数据处理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-08T14:30:33.000Z" title="发表于 2024-10-08 22:30:33">2024-10-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-08T14:27:56.888Z" title="更新于 2024-10-08 22:27:56">2024-10-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/HuggingFace/">HuggingFace</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/HuggingFace/Audio/">Audio</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">9.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>32分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Audio课程（一）- 音频数据处理"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2024/10/08/Audio_Course(1)/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/2024/10/08/Audio_Course(1)/" itemprop="commentCount"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>转载自：<a target="_blank" rel="noopener" href="https://huggingface.co/learn/audio-course/en/">https://huggingface.co/learn/audio-course/en/</a></p>
+<h1 id="audio课程一-音频数据处理"><a class="markdownIt-Anchor" href="#audio课程一-音频数据处理"></a> Audio课程（一）- 音频数据处理</h1>
+<h1 id="音频数据处理入门"><a class="markdownIt-Anchor" href="#音频数据处理入门"></a> 音频数据处理入门</h1>
+<p><font color="red">声波在本质上是一种连续信号，这意味着在一段给定时间内的声音信号有无数个取值。对于只能读取有限长数组的数字计算机来说，这是一个重要的问题。为了使得数字设备能够处理、储存和传送声波，我们需要将连续的声音信号转换为一个离散的序列。我们称之为<strong>数字化表示</strong>。</font></p>
+<p>音频数据集里包含了许多音频段落的数字化文件，例如一段旁白或者一段音乐。你可能见过不同的文件格式，例如<code>.wav</code> (<strong>Waveform Audio File</strong>，音频波形文件)、 <code>.flac</code> (<strong>Free Lossless Audio Codec</strong>，免费无损音频编解码) 和 <code>.mp3</code> (<strong>MPEG-1</strong> 音频格式 3)。<font color="red">这些格式的主要区别在于他们的压缩方法不同。</font></p>
+<p>下面我们来了解一下如何将连续的声音信号转换为这些数字化表示。<font color="red">原始的模拟信号首先被麦克风捕捉，并由声音信号转化为电信号。接下来，电信号会由模拟-数字转换器（模数转换器，Analog-to-Digital Converter, ADC）经由采样过程转换为数字化表示。</font></p>
+<h2 id="采样过程和采样率"><a class="markdownIt-Anchor" href="#采样过程和采样率"></a> 采样过程和采样率</h2>
+<p>采样是一种在固定的时间间隔上测量连续信号的数值的过程。采样过后的信号被称为<strong>离散信号</strong>，因为这些信号是在固定间隔上记录的有限长度信号。</p>
+<p><img src="Signal_Sampling.png" alt></p>
+<p><strong>采样率</strong>（sampling rate，也叫采样频率，sampling frequency）指的是每一秒钟内测量信号数值的次数，单位为赫兹（Hz）。作为参照，CD音质的音频一般采用44100赫兹的采样率，意味着每秒钟测量了44100次信号的数值。作为对比，高清（High-resolution）音频的采样率一般为192000赫兹，即192千赫兹。语音模型常用的采样率为16,000赫兹，即16千赫兹。</p>
+<p>采样率决定了能够被捕捉的最高频率。采样率的二分之一被称为<strong>奈奎斯特极限</strong>，这是该采样率能够捕捉的最高频率。人耳可辨认的语音信号往往在8千赫兹以下，因此16千赫兹的采样率足够捕捉所有可听到的语音内容。使用更高的采样率并不能采集到更多的信息，并且往往会导致计算成本的增加。另一方面，过低的采样率会导致信息丢失。使用8千赫兹采样的音频会听起来很闷，因为该采样率无法捕捉更高频率的声音。</p>
+<p><font color="red">在处理音频任务时，切记要保证数据集中的所有数据都使用了相同的采样率。如果你计划使用自己的数据来对预训练模型进行微调，你自己的音频数据和预训练模型所使用的音频数据需要保持相同的采样率。采样率决定了相邻的音频采样点的间隔时间，同时也影响着音频数据的时间分辨率。</font>设想这样一个例子：一段5秒长度，16000赫兹采样率的音频等效于一个40000个数据点的序列。Transformer模型会使用注意力机制来学习音频或多模态表征。由于序列的长度会根据音频采样率而变化，我们的模型很难对不同的采样率进行泛化学习。<strong>重采样</strong>过程可以匹配不同音频文件的采样率，是音频数据<a target="_blank" rel="noopener" href="https://huggingface.co/learn/audio-course/zh-CN/chapter1/preprocessing#resampling-the-audio-data">预处理</a>过程的一部分。</p>
+<h2 id="幅值和位深度"><a class="markdownIt-Anchor" href="#幅值和位深度"></a> 幅值和位深度</h2>
+<p>采样率告诉了我们每个采样点之间的时间间隔，那么采样点的数值具体又是如何确定的呢？</p>
+<p><font color="red">声音本质上是人类可察觉范围内的气压的周期性波动。声音的<strong>幅值</strong>描述的是任意瞬间的气压大小，使用分贝（dB）作为单位。人类感知到的幅值强度称为<strong>响度</strong>。</font>举个例子，正常的说话声音响度在60分贝以下；一场摇滚演出的响度大概在125分贝，几乎是人耳的极限。</p>
+<p><font color="red">在数字音频中，每个采样点都记录了某个时间点上的声波的幅值。采样点的<strong>位深度</strong>决定了采样点的数值可以有多少种变化，即采样的<strong>精度</strong>。位深度越大，数字化表示就可以越准确地记录下原始的连续声波。</font></p>
+<p>最常见的音频位深度为<strong>16比特</strong>或<strong>24比特</strong>。比特是一个二进制单位，表示了声波的连续幅值被数字化后可以取值的范围：16比特有65,536种可能的取值，而24比特有16,777,216种可能的取值。<font color="red">在这一量化过程中，原始的连续幅值被约减到最近的离散值上，因此量化过程会引入噪声。位深度越大，量化噪声则越小。</font>在实际应用中，16比特音频的量化噪声已达到了几乎不可辨别的程度，因此我们通常不会使用更大的位深度。</p>
+<p><font color="red">你也许听说过32比特音频。在这种设置下，采样点会被当作浮点数储存，而16比特或24比特则是将采样点作为整数储存。32比特的浮点数所拥有的精度实际上也是24比特，与24比特音频相同。</font>浮点数采样点的数值变化范围是[-1.0, 1.0]。由于机器学习模型在设计上也采用浮点数据，因此事实上任何音频文件在被输入进模型进行训练之前都需要转换为浮点数。在下一个章节<a target="_blank" rel="noopener" href="https://huggingface.co/learn/audio-course/zh-CN/chapter1/preprocessing">音频数据预处理</a>中我们会详细介绍这一过程。</p>
+<p>与连续声音信号相同，数字音频信号的响度也通常使用分贝（dB）表示。<font color="red">这是由于人耳对于声音响度的感知是遵循对数关系的：我们的耳朵对于细微声音的微小扰动的敏感度大于对吵闹声音的微小扰动的敏感度。</font>分贝也遵循这样的对数关系。现实世界中声音的分贝值是从0分贝开始计算的，0分贝代表着人耳所能感知到的最小的声音，更大的声音则拥有更高的分贝值。<font color="red">然而在数字音频中，0分贝代表着最大的幅值，并且任何更小的声音都有着负数的分贝值。一个简单的规则是，每-6分贝会让幅值减半，而-60分贝以下的声音基本是不可感知的，除非音量被调到很大。</font></p>
+<h2 id="音频的波形表示"><a class="markdownIt-Anchor" href="#音频的波形表示"></a> 音频的波形表示</h2>
+<p>你可能见过被可视化为<strong>波形</strong>的声音信号。在这种图表中，采样点随着时间变化的数值被标记在直角坐标系中。这也被称为声音的<em><strong>时域</strong></em>表示。</p>
+<p>这种可视化表示方法可以很好地帮助我们辨别声音信号中的某些特征，例如某个声音时间发生的时间、音频的整体响度、以及音频中的非正常部分或者噪声部分。</p>
+<p>我们可以使用<code>librosa</code>这一Python库来绘制<strong>音频信号</strong>的波形图：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install librosa</span><br></pre></td></tr></table></figure>
+<p>我们可以使用库中自带的音频文件”trumpet”绘制示例图：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> librosa</span><br><span class="line"></span><br><span class="line">array, sampling_rate = librosa.load(librosa.ex(<span class="string">&quot;trumpet&quot;</span>))</span><br></pre></td></tr></table></figure>
+<p>这一示例音频文件以元组的形式被加载，第一个元素为音频的<strong>时间序列</strong>（我们命名为<code>array</code>），第二个元素为<strong>采样率</strong>（<code>sampling_rate</code>）。我们使用librosa的<code>waveshow()</code>函数来绘制该音频的波形图：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> librosa.display</span><br><span class="line"></span><br><span class="line">plt.figure().set_figwidth(<span class="number">12</span>)</span><br><span class="line">librosa.display.waveshow(array, sr=sampling_rate)</span><br></pre></td></tr></table></figure>
+<p><img src="waveform_plot.png" alt></p>
+<p><font color="red">该图中的y轴表示的是信号的幅值，x轴则表示时间。</font>换句话说，图中的每个点都代表着该音频对应的原始信号被采样的某一瞬间的取值。同时我们也注意到librosa返回的音频序列已经是<strong>浮点数</strong>的，并且幅值的范围在[-1.0, 1.0]之间。</p>
+<p>除了直接聆听音频外，音频的可视化也可以帮助我们更好地理解我们的数据。<font color="red">你可以观察信号的形状、总结信号的规律、学习如何找出信号中的噪音和失真。如果你使用了归一化、重采样或者滤波等的信号预处理方法，你可以用可视化的方法来确认预处理后的信号是否符合你的预期。在完成模型训练之后，你也可以可视化模型出错的数据（例如在音频分类任务中被分到错误类别的样本）来找到模型中的错误。</font></p>
+<h2 id="频谱图"><a class="markdownIt-Anchor" href="#频谱图"></a> 频谱图</h2>
+<p>另一种音频可视化的方法则是绘制出音频信号的<strong>频谱</strong>（spectrum），也称为信号的<strong>频域</strong>（frequency domain）表示。<font color="red">频谱可以通过<strong>离散傅里叶变换</strong>（<strong>Discrete Fourier Transform， DFT</strong>）求得，它描述了音频信号中每个频率成分的强度。</font></p>
+<p>我们可以使用numpy的<code>rfft()</code>函数来绘制前文提到的小号声音的频谱图。虽然我们也可以绘制整个音频文件的频谱，但绘制一小段音频片段的频谱会更加有用。这里我们使用整段音频的前4096个采样点计算DFT，这差不多是第一个音符的长度：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">dft_input = array[:<span class="number">4096</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算 DFT</span></span><br><span class="line">window = np.hanning(<span class="built_in">len</span>(dft_input)) <span class="comment"># 汉宁窗</span></span><br><span class="line">windowed_input = dft_input * window</span><br><span class="line">dft = np.fft.rfft(windowed_input)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算频谱的幅值，转换为分贝标度</span></span><br><span class="line">amplitude = np.<span class="built_in">abs</span>(dft)</span><br><span class="line">amplitude_db = librosa.amplitude_to_db(amplitude, ref=np.<span class="built_in">max</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算每个DFT分量对应的频率值</span></span><br><span class="line">frequency = librosa.fft_frequencies(sr=sampling_rate, n_fft=<span class="built_in">len</span>(dft_input))</span><br><span class="line"></span><br><span class="line">plt.figure().set_figwidth(<span class="number">12</span>)</span><br><span class="line">plt.plot(frequency, amplitude_db)</span><br><span class="line">plt.xlabel(<span class="string">&quot;Frequency (Hz)&quot;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&quot;Amplitude (dB)&quot;</span>)</span><br><span class="line">plt.xscale(<span class="string">&quot;log&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>实部快速傅里叶变换</strong>：</p>
+<p><code>numpy.fft.rfft(a, n=None, axis=-1, norm=None)</code></p>
+<p><strong>参数说明</strong>：</p>
+<ul>
+<li>a：要进行fft变换的实数序列,长度为n；</li>
+<li>n：FFT变换长度，如果n比原序列长度少，原序列会被截断；如果n比原序列长度长，原序列会自动补零；</li>
+<li>axis：指定变换的轴；</li>
+<li>norm：可选参数，指定每一维的归一化方式。</li>
+</ul>
+<p><strong>返回值</strong>：</p>
+<p>返回一个复数数组，其长度为n/2+1。如果输入数组长度为n，那么返回的数组长度为（n/2+1）。</p>
+</blockquote>
+<p><img src="spectrum_plot.png" alt></p>
+<p>这张图向我们展示了截取的音频片段中各个频率成分的强度。<font color="red">图中的x轴是频率的值，一般采用对数表示；y轴则对于频率的幅值。</font></p>
+<p>可以看到这张频谱图中有几个峰值。这些峰值对应着当前音符的泛音频率，且更高的泛音声音更小。可以看到首个峰对应的频率在620赫兹左右，这说明当前演奏的音符的音高是E♭。</p>
+<p>计算DFT所得到的频谱是由复数组成的序列，每个复数都包含了实部和虚部。我们可以使用<code>np.abs(dft)</code>来计算频谱的<strong>绝对值</strong>（又称<strong>模、幅值</strong>）。实部和虚部的夹角组成的序列也成为<strong>相位谱</strong>，但在机器学习应用中我们通常不关注这一部分。</p>
+<p>我们使用了<code>librosa.amplitude_to_db()</code>函数将幅值转换为了分贝标度，方便我们观察频谱的细节。有时人们也使用测量能量而非幅值的<strong>能量谱</strong>（power spectrogram），其值为幅值的平方。</p>
+<blockquote>
+<p><font color="red">💡 在实践中，人们往往将<strong>快速傅里叶变换</strong>（<strong>Fast Fourier Transform, FFT</strong>）和<strong>离散傅里叶变换</strong>（<strong>Discrete Fourier Transform, DFT</strong>）这两个名词等价使用，这是因为FFT是在计算机中可以高效计算DFT的唯一方法。</font></p>
+</blockquote>
+<p>音频信号的频谱和其波形所包含的信息其实完全相同，他们只是相同数据的不同表示方法（这里均表示该小号音频的前4096个样本）。两者的区别在于波形表示的是幅值随着时间的变化，而频谱表示的是各个频率成分在该时间段内的强度。</p>
+<h2 id="时频谱"><a class="markdownIt-Anchor" href="#时频谱"></a> 时频谱</h2>
+<p><font color="red">我们能否用某种方法表示出频率成分随着时间的变化呢？</font>在这段小号音频中，演奏者实际上吹奏了几个不同频率的音符。频谱的问题在于其只能表示一个短暂时间段内各个频率成分的总体幅值。<font color="red">这里的解决方法是我们可以进行多次的DFT，每次DFT都覆盖一小段不同的时间段，然后再把所有的频谱堆叠起来，这样就构成了<strong>时频谱</strong>（spectrogram）。</font></p>
+<p>时频谱表示了音频信号中各个频率成分随时间变化的过程。它可以让你在一张图中看到时间、频率和幅值的所有信息。计算时频谱的算法被成为<strong>短时傅里叶变换</strong>（<strong>Short Time Fourier Transform, STFT</strong>）。</p>
+<p><font color="red">时频谱是信息量最大的音频工具之一。</font>举个例子，在分析音乐文件时，时频谱可以清晰地展示出各个乐器和人声在音乐整体中所占的部分。在语音文件中，你可以在时频谱里看到每个元音音节以及它们频率成分的差异。</p>
+<p>我们使用librosa的<code>stft()</code>函数和<code>specshow()</code>函数来绘制同一段小号音频的时频谱图：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">D = librosa.stft(array)</span><br><span class="line">S_db = librosa.amplitude_to_db(np.<span class="built_in">abs</span>(D), ref=np.<span class="built_in">max</span>)</span><br><span class="line"></span><br><span class="line">plt.figure().set_figwidth(<span class="number">12</span>)</span><br><span class="line">librosa.display.specshow(S_db, x_axis=<span class="string">&quot;time&quot;</span>, y_axis=<span class="string">&quot;hz&quot;</span>)</span><br><span class="line">plt.colorbar()</span><br></pre></td></tr></table></figure>
+<p><img src="spectrogram_plot.png" alt></p>
+<p><font color="red">该图中，x轴表示的是和波形图中相同的时间，但y轴现在表示着不同的频率，以赫兹为单位。颜色的强度表示着当前时间点和频率的幅值强度，使用<strong>分贝</strong>（<strong>dB</strong>）标度。</font></p>
+<p>时频谱的计算大概经过以下几个步骤：首先截取很短的音频片段（<strong>通常只有几毫秒</strong>），然后对每个片段计算其<strong>离散傅里叶变换</strong>（<strong>DFT</strong>）；<font color="red">获得所有片段的频谱之后，我们再将频谱延时间轴堆叠起来，这样就得到了我们的时频谱。时频谱图像的每个垂直切片都是一个单独的频谱图。</font><code>librosa.stft()</code>函数在默认条件下会把音频信号分割为2048个样本的许多切片，这一数字是在权衡了时频谱的频域分辨率和时域分辨率之后设置的。</p>
+<p>由于时频谱和波形是同一信号的不同表示方法，我们也可以利用<strong>反向短时傅里叶变换</strong>（<strong>inverse STFT</strong>）将时频谱转换回原始的波形。然而，这一操作除了需要时频谱的强度谱之外，也需要时频谱的相位谱。目前的机器学习模型大多只能生成强度谱。这时我们可以使用一些相位重建（phase reconstruction）方法，包括传统的Griffin-Lim算法，或者使用一种被称为<strong>声码器</strong>（vocoder）的神经网络来从时频谱还原其波形。</p>
+<p>时频谱的作用不仅在于音频的可视化。许多机器学习模型也会使用时频谱作为模型的输入和输出而不直接使用音频的波形。</p>
+<p>现在我们了解了时频谱的原理和计算方法，我们来进一步学习一下在语音处理中常见的一种时频谱变体：<strong>梅尔时频谱。</strong></p>
+<h2 id="梅尔时频谱"><a class="markdownIt-Anchor" href="#梅尔时频谱"></a> 梅尔时频谱</h2>
+<p><strong>梅尔时频谱</strong>（<strong>简称梅尔谱</strong>）是一种在语音处理和机器学习中常用的时频谱变体。梅尔谱也和时频谱一样表示了频率成分随时间的变化，只是频率所在的轴不同。</p>
+<p><font color="red">在标准的时频谱中，频率所在的轴是赫兹的线性变化轴。然而，人类的听觉系统对于低频率声音的变化更敏感，对于高频率声音的变化则较不敏感。这一敏感度的变化是随频率的上升呈<strong>对数关系</strong>下降的。</font>梅尔标度作为一种感知标度模拟了人耳对于频率的非线性感知。</p>
+<p>为了生成信号的梅尔谱，我们首先使用和标准时频谱相同的<strong>短时傅里叶变换</strong>（<strong>STFT</strong>）将音频分割为许多短时片段，并计算每个片段的频谱。然后，我们将每个片段的频谱输入进<strong>梅尔滤波器组</strong>（<strong>mel filterbank</strong>），来将频率成分转换到梅尔标度。</p>
+<p>下面我们使用librosa的<code>melspectrogram()</code>函数绘制梅尔谱图，该函数帮我们执行了上述的所有步骤：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">S = librosa.feature.melspectrogram(y=array, sr=sampling_rate, n_mels=<span class="number">128</span>, fmax=<span class="number">8000</span>)</span><br><span class="line">S_dB = librosa.power_to_db(S, ref=np.<span class="built_in">max</span>)</span><br><span class="line"></span><br><span class="line">plt.figure().set_figwidth(<span class="number">12</span>)</span><br><span class="line">librosa.display.specshow(S_dB, x_axis=<span class="string">&quot;time&quot;</span>, y_axis=<span class="string">&quot;mel&quot;</span>, sr=sampling_rate, fmax=<span class="number">8000</span>)</span><br><span class="line">plt.colorbar()</span><br></pre></td></tr></table></figure>
+<p><img src="mel-spectrogram.png" alt></p>
+<p>在这段例子中，<code>n_mels</code>代表梅尔滤波器组中的滤波器个数。梅尔滤波器组会计算一组频率范围，这些频率范围会将整个频谱分割成许多部分。每个频率范围都对应滤波器组中的一个滤波器，滤波器的形状和间隔是模拟人耳对不同频率的感知差异而计算得出。常用的<code>n_mels</code>取值为40或80。<code>fmax</code>则代表我们想选取的最大频率（以赫兹为单位）。</p>
+<p>和标准频谱一样，我们也会将梅尔频率成分的强度转化为分贝标度。由于分贝的转化过程涉及到对数运算，转化后的梅尔谱通常被称为<strong>对数梅尔时频谱</strong>（log-mel spectrum）。在上面示例中，我们使用<code>librosa.power_to_db()</code>函数和<code>librosa.feature.melspectrogram()</code>来生成能量对数梅尔时频谱。</p>
+<blockquote>
+<p>💡 梅尔视频谱间也有各种区别！有两种常用的mel计算标度（<strong>“htk”</strong> 和 <strong>“slaney”</strong>），此外还有能量谱和幅度谱的区别。<font color="red">对数梅尔谱的转换有时仅仅是简单计算<code>对数</code>而不会完整转化为分贝标度</font>。因此，在使用以梅尔谱作为输入的机器学习模型时，我们建议你检查梅尔谱的计算过程是否完全一致。</p>
+</blockquote>
+<p>由于梅尔谱的计算过程中需要对信号进行滤波，梅尔谱的计算是一个<strong>有损过程</strong>。将梅尔谱转化回波形比将标准时频谱转化回波形更加困难，因为我们需要估计在滤波过程中丢失的频率成分。这就是为何我们需要<strong>HiFiGAN声码器</strong>等机器学习模型来将梅尔谱转化回波形。</p>
+<p>与标准时频谱相比，梅尔谱可以捕捉更多人类可感知的音频特征，因此梅尔谱也成为了在语音识别、说话人识别、音乐风格分类等任务中更常用的选择。</p>
+<h1 id="加载音频数据集"><a class="markdownIt-Anchor" href="#加载音频数据集"></a> 加载音频数据集</h1>
+<p>本节中我们将会使用🤗 Datasets来获取音频数据集。🤗 Datasets是一个下载和准备数据集的开源工具，包含了音频在内的各种模态数据。该工具集为Hugging Face Hub上公开的机器学习数据集提供了易用的接口。此外，🤗 Datasets还提供了专门为音频数据集而设的多种特性，帮助研究者和机器学习实践者更轻松地使用这些数据集。</p>
+<p>首先，我们要确认已经安装了🤗 Datasets库：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install datasets[audio]</span><br></pre></td></tr></table></figure>
+<p>🤗 Datasets的其中一个重磅功能是可以使用<code>load_dataset()</code>函数达到仅用一行代码下载和准备数据集。</p>
+<p>这里我们来加载和探索<a target="_blank" rel="noopener" href="https://huggingface.co/datasets/PolyAI/minds14">MINDS-14</a>这一音频数据集。该数据集的内容是人们向某个网银系统提问的录音，包含了多种语言和方言。</p>
+<p>为了加载MINDS-14数据集，我们需要复制该数据集在Hugging Face Hub上的identifier（<code>PolyAI/minds14</code>），并向<code>load_dataset()</code>函数传入该参数。这里我们只选取该数据集的<strong>澳大利亚子集</strong>（<code>en-AU</code>）的训练分集：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datasets <span class="keyword">import</span> load_dataset</span><br><span class="line"></span><br><span class="line">minds = load_dataset(<span class="string">&quot;PolyAI/minds14&quot;</span>, name=<span class="string">&quot;en-AU&quot;</span>, split=<span class="string">&quot;train&quot;</span>)</span><br><span class="line"></span><br><span class="line">minds</span><br></pre></td></tr></table></figure>
+<p><strong>输出：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Dataset(</span><br><span class="line">    &#123;</span><br><span class="line">        features: [</span><br><span class="line">            <span class="string">&quot;path&quot;</span>,</span><br><span class="line">            <span class="string">&quot;audio&quot;</span>,</span><br><span class="line">            <span class="string">&quot;transcription&quot;</span>,</span><br><span class="line">            <span class="string">&quot;english_transcription&quot;</span>,</span><br><span class="line">            <span class="string">&quot;intent_class&quot;</span>,</span><br><span class="line">            <span class="string">&quot;lang_id&quot;</span>,</span><br><span class="line">        ],</span><br><span class="line">        num_rows: <span class="number">654</span>,</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>该数据集包含了654个音频文件，每个都有对应的转录文字和其英语翻译，以及一个代表询问人目的的标签。“audio”列则包含了原始的音频数据。我们来仔细看看其中的一个样本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">example = minds[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">example</span><br></pre></td></tr></table></figure>
+<p><strong>输出</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;path&quot;</span>: <span class="string">&quot;/root/.cache/huggingface/datasets/downloads/extracted/f14948e0e84be638dd7943ac36518a4cf3324e8b7aa331c5ab11541518e9368c/en-AU~PAY_BILL/response_4.wav&quot;</span>,</span><br><span class="line">    <span class="string">&quot;audio&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;path&quot;</span>: <span class="string">&quot;/root/.cache/huggingface/datasets/downloads/extracted/f14948e0e84be638dd7943ac36518a4cf3324e8b7aa331c5ab11541518e9368c/en-AU~PAY_BILL/response_4.wav&quot;</span>,</span><br><span class="line">        <span class="string">&quot;array&quot;</span>: array(</span><br><span class="line">            [<span class="number">0.0</span>, <span class="number">0.00024414</span>, -<span class="number">0.00024414</span>, ..., -<span class="number">0.00024414</span>, <span class="number">0.00024414</span>, <span class="number">0.0012207</span>],</span><br><span class="line">            dtype=float32,</span><br><span class="line">        ),</span><br><span class="line">        <span class="string">&quot;sampling_rate&quot;</span>: <span class="number">8000</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;transcription&quot;</span>: <span class="string">&quot;I would like to pay my electricity bill using my card can you please assist&quot;</span>,</span><br><span class="line">    <span class="string">&quot;english_transcription&quot;</span>: <span class="string">&quot;I would like to pay my electricity bill using my card can you please assist&quot;</span>,</span><br><span class="line">    <span class="string">&quot;intent_class&quot;</span>: <span class="number">13</span>,</span><br><span class="line">    <span class="string">&quot;lang_id&quot;</span>: <span class="number">2</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>你可能注意到了”audio”列包含了好几个特征，它们分别是：</p>
+<ul>
+<li><code>path</code>：音频文件的路径（这里为<code>*.wav</code>）。</li>
+<li><code>array</code>：解码后的音频文件，以1维NumPy数组表示。</li>
+<li><code>sampling_rate</code>：音频文件的采样率（该样本为8000赫兹）。</li>
+<li><code>intent_class</code>则是分类的具体类别。<font color="red">我们可以使用<code>int2str()</code>方法将该数字转换为有意义的字符串：</font></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">id2label = minds.features[<span class="string">&quot;intent_class&quot;</span>].int2str</span><br><span class="line">id2label(example[<span class="string">&quot;intent_class&quot;</span>])</span><br></pre></td></tr></table></figure>
+<p><strong>输出：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;pay_bill&quot;</span></span><br></pre></td></tr></table></figure>
+<p>在该样本的转录文字中，我们可以看到该音频的内容确实是某人在提一个关于账单的问题。</p>
+<p><font color="red">如果你只是想用该子集训练一个音频分类器，你可能不需要使用所有的特征。</font>举个例子，<code>lang_id</code>标签在该子集中全部为同样的值；<code>english_transcription</code>标签和<code>transcription</code>几乎完全含有相同的内容，因此我们也可以舍弃该标签。</p>
+<p>你可以使用🤗 Datasets的<code>remove_columns()</code>方法轻松地移除所有不相关的标签：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">columns_to_remove = [<span class="string">&quot;lang_id&quot;</span>, <span class="string">&quot;english_transcription&quot;</span>]</span><br><span class="line">minds = minds.remove_columns(columns_to_remove)</span><br><span class="line">minds</span><br></pre></td></tr></table></figure>
+<p><strong>输出：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Dataset(&#123;features: [<span class="string">&quot;path&quot;</span>, <span class="string">&quot;audio&quot;</span>, <span class="string">&quot;transcription&quot;</span>, <span class="string">&quot;intent_class&quot;</span>], num_rows: <span class="number">654</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p>现在我们已经加载并检验了数据集的原始内容，让我们来听几个例子吧！我们可以使用<code>Gradio</code>中的<code>Blocks</code>功能和<code>Audio</code>功能从数据集中解码几个样本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> gradio <span class="keyword">as</span> gr</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">generate_audio</span>():</span><br><span class="line">    example = minds.shuffle()[<span class="number">0</span>] <span class="comment"># 顺序打乱之后再取第一个样本</span></span><br><span class="line">    audio = example[<span class="string">&quot;audio&quot;</span>]</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">        audio[<span class="string">&quot;sampling_rate&quot;</span>],</span><br><span class="line">        audio[<span class="string">&quot;array&quot;</span>],</span><br><span class="line">    ), id2label(example[<span class="string">&quot;intent_class&quot;</span>])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> gr.Blocks() <span class="keyword">as</span> demo:</span><br><span class="line">    <span class="keyword">with</span> gr.Column():</span><br><span class="line">        <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>):</span><br><span class="line">            audio, label = generate_audio()</span><br><span class="line">            output = gr.Audio(audio, label=label)</span><br><span class="line"></span><br><span class="line">demo.launch(debug=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p><img src="104231.png" alt></p>
+<p>你也可以<strong>可视化</strong>你想要的样本。这里我们试着绘制第一个样本的波形图：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> librosa</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> librosa.display</span><br><span class="line"></span><br><span class="line">array = example[<span class="string">&quot;audio&quot;</span>][<span class="string">&quot;array&quot;</span>]</span><br><span class="line">sampling_rate = example[<span class="string">&quot;audio&quot;</span>][<span class="string">&quot;sampling_rate&quot;</span>]</span><br><span class="line"></span><br><span class="line">plt.figure().set_figwidth(<span class="number">12</span>)</span><br><span class="line">librosa.display.waveshow(array, sr=sampling_rate)</span><br></pre></td></tr></table></figure>
+<p><img src="waveform_unit1.png" alt></p>
+<h1 id="音频数据集的预处理"><a class="markdownIt-Anchor" href="#音频数据集的预处理"></a> 音频数据集的预处理</h1>
+<p>使用🤗 Datasets加载数据集只是乐趣的一半。如果你计划用数据集训练模型或者运行推理，那么你还需要对数据进行<strong>预处理（pre-processing）</strong>。数据预处理通常包括以下几步：</p>
+<ul>
+<li>音频重采样</li>
+<li>对数据集进行过滤</li>
+<li>将音频数据转换为模型要求的输入形式</li>
+</ul>
+<h2 id="音频重采样"><a class="markdownIt-Anchor" href="#音频重采样"></a> 音频重采样</h2>
+<p><code>load_dataset()</code>函数在下载数据集时会<strong>保留数据集发布时的原始采样率</strong>。<font color="red">当你使用其他模型进行训练或推理时，该采样率也许会不符合要求。当采样率不同时，你可以进行重采样来将数据调整到模型所期望的采样率。</font></p>
+<p>目前大多数的预训练模型采用了<strong>16千赫兹</strong>采样率的数据集进行预训练。在上一张探索MINDS-14数据集时，你可能注意到了该数据集采用了8千赫兹的采样率，这意味着我们需要对其进行上采样。</p>
+<p>我们可以使用🤗 Datasets的<code>cast_column()</code>方法进行上采样。该方法不会在原位改动数据，而是在数据加载时进行实时的重采样。下面的代码可以将样本重采样到16千赫兹：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datasets <span class="keyword">import</span> Audio</span><br><span class="line"></span><br><span class="line">minds = minds.cast_column(<span class="string">&quot;audio&quot;</span>, Audio(sampling_rate=<span class="number">16_000</span>))</span><br></pre></td></tr></table></figure>
+<p>现在我们重新加载MINDS-14的第一个样本，并检查其是否按照我们提供的<code>sampling_rate</code>参数进行了重采样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">minds[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+<p><strong>输出</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;path&quot;</span>: <span class="string">&quot;/root/.cache/huggingface/datasets/downloads/extracted/f14948e0e84be638dd7943ac36518a4cf3324e8b7aa331c5ab11541518e9368c/en-AU~PAY_BILL/response_4.wav&quot;</span>,</span><br><span class="line">    <span class="string">&quot;audio&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;path&quot;</span>: <span class="string">&quot;/root/.cache/huggingface/datasets/downloads/extracted/f14948e0e84be638dd7943ac36518a4cf3324e8b7aa331c5ab11541518e9368c/en-AU~PAY_BILL/response_4.wav&quot;</span>,</span><br><span class="line">        <span class="string">&quot;array&quot;</span>: array(</span><br><span class="line">            [</span><br><span class="line">                <span class="number">2.0634243e-05</span>,</span><br><span class="line">                <span class="number">1.9437837e-04</span>,</span><br><span class="line">                <span class="number">2.2419340e-04</span>,</span><br><span class="line">                ...,</span><br><span class="line">                <span class="number">9.3852862e-04</span>,</span><br><span class="line">                <span class="number">1.1302452e-03</span>,</span><br><span class="line">                <span class="number">7.1531429e-04</span>,</span><br><span class="line">            ],</span><br><span class="line">            dtype=float32,</span><br><span class="line">        ),</span><br><span class="line">        <span class="string">&quot;sampling_rate&quot;</span>: <span class="number">16000</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;transcription&quot;</span>: <span class="string">&quot;I would like to pay my electricity bill using my card can you please assist&quot;</span>,</span><br><span class="line">    <span class="string">&quot;intent_class&quot;</span>: <span class="number">13</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><font color="red">你可能注意到数列的值也有所变化。这是因为我们在重采样后会获得两倍于原来采样点数量的数值。</font></p>
+<blockquote>
+<p>💡 关于重采样的背景知识：当信号的原始采样率为8千赫兹时，信号每秒钟会包含8000个采样点，并且我们知道该信号不会包含高于4千赫兹的频率成分。奈奎斯特采样定理保证了这一点。也因此，我们可以确保在两个采样点中间的原始连续信号呈一条平滑的曲线。在这样的条件下，上采样所要做的就只是根据对曲线的估计而计算出两个采样点中间的额外数值。与之相反的是，下采样过程需要我们首先过滤掉所有高于奈奎斯特极限的频率成分，之后才能重新计算采样点。<font color="red">也就是说，我们不能通过简单的每隔一个采样点丢弃一个采样点来进行2倍的下采样：这会造成信号的失真，我们称之为<strong>混叠失真</strong>。</font>重采样过程十分棘手，因此我们推荐使用经过测试的工具库，例如librosa或🤗 Datasets。</p>
+</blockquote>
+<h2 id="过滤数据集"><a class="markdownIt-Anchor" href="#过滤数据集"></a> 过滤数据集</h2>
+<p>我们可能会需要用一些指标来过滤掉数据集中的一些数据。一种常见情况是<strong>限制音频文件的时长</strong>。举个例子，我们可能需要过滤掉所有长度超过20秒的音频来防止模型训练过程中的内存不足错误。</p>
+<p>我们可以使用🤗 Datasets的<code>filter</code>方法并传入过滤逻辑的函数来进行过滤。首先我们需要编写一个函数来指示哪些样本需要保留，哪些样本需要舍弃。这里我们编写了<code>is_audio_length_in_range()</code>函数，在样本长度小于20秒时会返回<code>True</code>，否则返回<code>False</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">MAX_DURATION_IN_SECONDS = <span class="number">20.0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">is_audio_length_in_range</span>(<span class="params">input_length</span>):</span><br><span class="line">    <span class="keyword">return</span> input_length &lt; MAX_DURATION_IN_SECONDS</span><br></pre></td></tr></table></figure>
+<p>该过滤函数可以直接应用在数据集的列上，<font color="red">但我们的数据集并没有一个单独的记录音频长度的列。不过我们可以自己创建一列，然后进行过滤，最后在过滤完成之后删除该列。</font></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用librosa从音频文件里获取该音频的长度</span></span><br><span class="line">new_column = [librosa.get_duration(filename=x) <span class="keyword">for</span> x <span class="keyword">in</span> minds[<span class="string">&quot;path&quot;</span>]]</span><br><span class="line">minds = minds.add_column(<span class="string">&quot;duration&quot;</span>, new_column)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用🤗 Datasets的`filter`方法来进行过滤</span></span><br><span class="line">minds = minds.<span class="built_in">filter</span>(is_audio_length_in_range, input_columns=[<span class="string">&quot;duration&quot;</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 移除临时列</span></span><br><span class="line">minds = minds.remove_columns([<span class="string">&quot;duration&quot;</span>])</span><br><span class="line"></span><br><span class="line">minds</span><br></pre></td></tr></table></figure>
+<p><strong>输出</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Dataset(&#123;features: [<span class="string">&quot;path&quot;</span>, <span class="string">&quot;audio&quot;</span>, <span class="string">&quot;transcription&quot;</span>, <span class="string">&quot;intent_class&quot;</span>], num_rows: <span class="number">624</span>&#125;)</span><br></pre></td></tr></table></figure>
+<p>我们可以看到数据集的样本数量从654个被过滤到了624个。</p>
+<h2 id="音频数据的预处理"><a class="markdownIt-Anchor" href="#音频数据的预处理"></a> 音频数据的预处理</h2>
+<p><font color="red">在利用音频数据集时，最具挑战的工作之一便是给<strong>模型训练提供正确格式的数据</strong>。</font>如你所见，原始的音频数据是一个<strong>单列的采样点数组</strong>。然而，无论是推理还是根据任务进行微调，大部分的预训练模型都需要将音频数据转化成其对应的输入特征。每个模型的输入特征都有不同的要求，往往根据模型的架构和其预训练的数据集所决定。好消息是，🤗 Transformers所支持的所有音频模型都提供了一个特征提取类，负责将原始的音频数据转化为该模型所需的输入特征格式。</p>
+<p>特征提取器具体会对音频文件做些什么呢？我们可以参考<a target="_blank" rel="noopener" href="https://cdn.openai.com/papers/whisper.pdf">Whisper</a>的特征提取器来理解一些常用的特征提取变换。<strong>Whisper</strong>是一个<strong>自动语音识别</strong>（<strong>automatic specch recognition, ASR</strong>）的预训练模型，由OpenAI的Alec Radford等人于2022年9月发布。</p>
+<blockquote>
+<ol>
+<li><font color="red">首先，Whisper的特征提取器会加长/截短某一批次中的所有音频样本，确保他们均为长30秒的音频。</font>短于30秒的样本会采用末尾补零的方式加长至30秒，因为零在音频信号中代表无信号或静音。长于30秒的音频会被截取至30秒。由于一批次的所有音频都被加长/截短至同一长度，<font color="red">我们不再需要使用attention mask。这是Whisper模型的特性之一，</font>因为大多数其他的音频模型都需要使用attention mask来告诉模型输入的哪些部分进行了补值，来让这些被补值的位置在self-attention过程中被忽略。Whisper模型在训练时就在无需attention mask的情况下运行，并且能直接从输入的音频信号中推理出哪些部分需要被忽略。</li>
+<li><font color="red">Whisper的特征提取器所进行的第二个操作是将定长的音频数组转化为<strong>对数梅尔时频谱</strong>（log-mel spectrogram）。</font>如前文所述，对数梅尔谱描述了各个频率成分是如何随时间变化的，并且在频率上使用了梅尔标度，在幅值上使用的分贝（对数）标度，使得频率和幅值的关系更接近于人耳的感知。</li>
+</ol>
+</blockquote>
+<p>上述的所有变换都可以用简短的几行代码应用到原始的音频数据上。现在，我们从预训练的Whisper模型检查点（checkpoint）加载特征提取器，为音频数据做好准备：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> WhisperFeatureExtractor</span><br><span class="line"></span><br><span class="line">feature_extractor = WhisperFeatureExtractor.from_pretrained(<span class="string">&quot;openai/whisper-small&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>然后，我们编写一个处理单个样本的函数，将该样本中的音频文件输入特征提取器<code>feature_extractor</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">prepare_dataset</span>(<span class="params">example</span>):</span><br><span class="line">    audio = example[<span class="string">&quot;audio&quot;</span>]</span><br><span class="line">    features = feature_extractor(</span><br><span class="line">        audio[<span class="string">&quot;array&quot;</span>], sampling_rate=audio[<span class="string">&quot;sampling_rate&quot;</span>], padding=<span class="literal">True</span></span><br><span class="line">    )</span><br><span class="line">    <span class="keyword">return</span> features</span><br></pre></td></tr></table></figure>
+<p>我们可以使用🤗 Datasets的<code>map</code>方法将这个数据处理函数应用到数据集中的所有训练样本上：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">minds = minds.<span class="built_in">map</span>(prepare_dataset)</span><br><span class="line"></span><br><span class="line">minds</span><br></pre></td></tr></table></figure>
+<p><strong>输出：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Dataset(</span><br><span class="line">    &#123;</span><br><span class="line">        features: [<span class="string">&quot;path&quot;</span>, <span class="string">&quot;audio&quot;</span>, <span class="string">&quot;transcription&quot;</span>, <span class="string">&quot;intent_class&quot;</span>, <span class="string">&quot;input_features&quot;</span>],</span><br><span class="line">        num_rows: <span class="number">624</span>,</span><br><span class="line">    &#125;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>简单几步后，我们就获得了对数梅尔谱并存储在数据集的<code>input_features</code>列中。</p>
+<p>我们来试着可视化<code>minds</code>数据集中的一个样本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">example = minds[<span class="number">0</span>]</span><br><span class="line">input_features = example[<span class="string">&quot;input_features&quot;</span>]</span><br><span class="line"></span><br><span class="line">plt.figure().set_figwidth(<span class="number">12</span>)</span><br><span class="line">librosa.display.specshow(</span><br><span class="line">    np.asarray(input_features[<span class="number">0</span>]),</span><br><span class="line">    x_axis=<span class="string">&quot;time&quot;</span>,</span><br><span class="line">    y_axis=<span class="string">&quot;mel&quot;</span>,</span><br><span class="line">    sr=feature_extractor.sampling_rate,</span><br><span class="line">    hop_length=feature_extractor.hop_length,</span><br><span class="line">)</span><br><span class="line">plt.colorbar()</span><br></pre></td></tr></table></figure>
+<p><img src="log_mel_whisper.png" alt></p>
+<p>现在你可以看到经过预处理后的Whisper模型的输入了。</p>
+<p>模型的特征提取器会保证将原始音频转化为模型所需要的输入格式。然而，许多音频相关的任务，比如语音识别，往往也是多模态的任务。🤗 Transformers库提供了针对各种文字模型的分词器（Tokenizer）。请参考我们的<a target="_blank" rel="noopener" href="https://huggingface.co/learn/nlp-course/zh-CN/chapter2/4">自然语言处理课程</a>中对分词器的详细介绍。</p>
+<p>我们可以分别加载Whisper中的特征提取器和其他多模态模型中的分词器，也可以通过processor将他们同时加载。如果想要更加简单的用法，你可以使用<code>AutoProcessor</code>从模型的检查点中直接加载特征提取器和processor：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoProcessor</span><br><span class="line"></span><br><span class="line">processor = AutoProcessor.from_pretrained(<span class="string">&quot;openai/whisper-small&quot;</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在本小节中，我们介绍了数据准备的基本流程。但要注意的是，您的自定义数据集往往会需要一些更复杂的数据预处理。针对这些情况，你可以扩展<code>prepare_dataset()</code>函数来实现各种自定义的数据转换流程。在🤗 Datasets的帮助下，只要您能将数据处理流程编写为Python函数，就可以将其应用在您的数据集上！</p>
+</blockquote>
+<h1 id="音频数据的流式加载"><a class="markdownIt-Anchor" href="#音频数据的流式加载"></a> 音频数据的流式加载</h1>
+<p>使用音频数据集的最大挑战之一是它们庞大的规模。仅仅一分钟的CD音质音频（44.1千赫兹，16比特）就需要占用约5MB的存储。一般的音频数据集会含有数个小时的音频录音。</p>
+<p>在上一小节中，我们使用了MINDS-14的一个非常小的子集，但常见的音频数据集往往要大得多。举个例子<a target="_blank" rel="noopener" href="https://huggingface.co/datasets/speechcolab/gigaspeech">GigaSpeech from SpeechColab</a>的<code>xs</code><strong>（最小）子集</strong>仅有10小时的训练数据，但需要占用超过13GB的存储空间。当我们选择更大的子集时会发生什么呢？其最大的<code>xl</code>子集含有10000小时的训练数据，需要占用超过1TB的存储空间。对大多数人来说，这已经远远超过了我们的硬盘所能容纳的容量。我们需要剁手购买额外的硬盘吗？还是说有其他方法可以让我们绕过存储空间的限制呢？</p>
+<p>🤗 Datasets为你提供了解决方法：<strong>流式处理模式。</strong><font color="red">流式处理可以让我们在遍历数据集的过程中渐进地加载数据。与其一次性地下载完整数据集，不如将样本一个个单独加载。在遍历数据集时，我们实时地在有需要时加载和准备好每个样本。通过这样的方式，我们永远只加载我们正在使用的数据，而不加载我们暂时不需要的数据。当我们使用完一个样本时，就继续遍历数据集，加载下一个样本。</font></p>
+<blockquote>
+<p>相较于全量加载，流式处理模式主要有三个优点：</p>
+<ul>
+<li><strong>硬盘空间</strong>：样本是在遍历数据集的过程中被依次加载到内存中的。由于我们不需要将数据下载到本地，因此也没有任何对硬盘空间的要求，你可以使用任意大小的数据集。</li>
+<li><strong>下载和处理时间</strong>：音频数据集极其庞大并且需要大量的数据下载和处理时间。在流式处理模式下，数据会进行实时的加载和处理，因此当第一个样本准备完成时我们就可以开始训练。</li>
+<li><strong>测试简单</strong>：无需下载完整的数据集，仅用少量的样本就可以测试你的训练脚本。</li>
+</ul>
+</blockquote>
+<p>在使用流式处理模式时，有一点需要警惕：在全量下载数据集时，所有的原始数据和处理后的数据都会在硬盘内本地存储。如果我们想要重复利用这些数据，我们可以跳过下载和处理过程，直接从硬盘中加载数据。这意味着我们在重复利用数据时，仅在第一次时需要下载和处理数据。但在流式处理模式中，数据不会被下载到硬盘内。因此，我们的下载和预处理过程都不会被保存。在重复利用数据集时，我们必须要重复进行下载和预处理才做。<font color="red">因此，如果你计划重复使用数据集，我们还是推荐将数据集下载到本地硬盘。</font></p>
+<p>如何启用流式处理模式呢？很简单！只需要在加载数据集时传入<code>streaming=True</code>参数即可<font color="red">(NLP中也有流式处理）</font>。我们会帮你做好其他工作：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gigaspeech = load_dataset(<span class="string">&quot;speechcolab/gigaspeech&quot;</span>, <span class="string">&quot;xs&quot;</span>, streaming=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>与我们在全量下载MINDS-14子集时进行的预处理操作相同，你也可以在流式数据集上使用同样的预处理操作。</p>
+<p><font color="red">唯一的区别是我们现在无法使用Python的索引功能访问单个的样本（例如<code>gigaspeech[&quot;train&quot;][sample_idx]</code>）。</font>相反地，我们需要遍历整个数据集。你可以在流式数据集这这样访问单个样本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">next</span>(<span class="built_in">iter</span>(gigaspeech[<span class="string">&quot;train&quot;</span>]))</span><br></pre></td></tr></table></figure>
+<p><strong>输出：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;segment_id&quot;</span>: <span class="string">&quot;YOU0000000315_S0000660&quot;</span>,</span><br><span class="line">    <span class="string">&quot;speaker&quot;</span>: <span class="string">&quot;N/A&quot;</span>,</span><br><span class="line">    <span class="string">&quot;text&quot;</span>: <span class="string">&quot;AS THEY&#x27;RE LEAVING &lt;COMMA&gt; CAN KASH PULL ZAHRA ASIDE REALLY QUICKLY &lt;QUESTIONMARK&gt;&quot;</span>,</span><br><span class="line">    <span class="string">&quot;audio&quot;</span>: &#123;</span><br><span class="line">        <span class="string">&quot;path&quot;</span>: <span class="string">&quot;xs_chunks_0000/YOU0000000315_S0000660.wav&quot;</span>,</span><br><span class="line">        <span class="string">&quot;array&quot;</span>: array(</span><br><span class="line">            [<span class="number">0.0005188</span>, <span class="number">0.00085449</span>, <span class="number">0.00012207</span>, ..., <span class="number">0.00125122</span>, <span class="number">0.00076294</span>, <span class="number">0.00036621</span>]</span><br><span class="line">        ),</span><br><span class="line">        <span class="string">&quot;sampling_rate&quot;</span>: <span class="number">16000</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&quot;begin_time&quot;</span>: <span class="number">2941.89</span>,</span><br><span class="line">    <span class="string">&quot;end_time&quot;</span>: <span class="number">2945.07</span>,</span><br><span class="line">    <span class="string">&quot;audio_id&quot;</span>: <span class="string">&quot;YOU0000000315&quot;</span>,</span><br><span class="line">    <span class="string">&quot;title&quot;</span>: <span class="string">&quot;Return to Vasselheim | Critical Role: VOX MACHINA | Episode 43&quot;</span>,</span><br><span class="line">    <span class="string">&quot;url&quot;</span>: <span class="string">&quot;https://www.youtube.com/watch?v=zr2n1fLVasU&quot;</span>,</span><br><span class="line">    <span class="string">&quot;source&quot;</span>: <span class="number">2</span>,</span><br><span class="line">    <span class="string">&quot;category&quot;</span>: <span class="number">24</span>,</span><br><span class="line">    <span class="string">&quot;original_full_path&quot;</span>: <span class="string">&quot;audio/youtube/P0004/YOU0000000315.opus&quot;</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>你可以使用<code>take()</code>函数来预览数据集的几个样本。让我们看看gigaspeech数据集的前两个样本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gigaspeech_head = gigaspeech[<span class="string">&quot;train&quot;</span>].take(<span class="number">2</span>)</span><br><span class="line"><span class="built_in">list</span>(gigaspeech_head)</span><br></pre></td></tr></table></figure>
+<p><strong>输出：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;segment_id&quot;</span>: <span class="string">&quot;YOU0000000315_S0000660&quot;</span>,</span><br><span class="line">        <span class="string">&quot;speaker&quot;</span>: <span class="string">&quot;N/A&quot;</span>,</span><br><span class="line">        <span class="string">&quot;text&quot;</span>: <span class="string">&quot;AS THEY&#x27;RE LEAVING &lt;COMMA&gt; CAN KASH PULL ZAHRA ASIDE REALLY QUICKLY &lt;QUESTIONMARK&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot;audio&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;path&quot;</span>: <span class="string">&quot;xs_chunks_0000/YOU0000000315_S0000660.wav&quot;</span>,</span><br><span class="line">            <span class="string">&quot;array&quot;</span>: array(</span><br><span class="line">                [</span><br><span class="line">                    <span class="number">0.0005188</span>,</span><br><span class="line">                    <span class="number">0.00085449</span>,</span><br><span class="line">                    <span class="number">0.00012207</span>,</span><br><span class="line">                    ...,</span><br><span class="line">                    <span class="number">0.00125122</span>,</span><br><span class="line">                    <span class="number">0.00076294</span>,</span><br><span class="line">                    <span class="number">0.00036621</span>,</span><br><span class="line">                ]</span><br><span class="line">            ),</span><br><span class="line">            <span class="string">&quot;sampling_rate&quot;</span>: <span class="number">16000</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">&quot;begin_time&quot;</span>: <span class="number">2941.89</span>,</span><br><span class="line">        <span class="string">&quot;end_time&quot;</span>: <span class="number">2945.07</span>,</span><br><span class="line">        <span class="string">&quot;audio_id&quot;</span>: <span class="string">&quot;YOU0000000315&quot;</span>,</span><br><span class="line">        <span class="string">&quot;title&quot;</span>: <span class="string">&quot;Return to Vasselheim | Critical Role: VOX MACHINA | Episode 43&quot;</span>,</span><br><span class="line">        <span class="string">&quot;url&quot;</span>: <span class="string">&quot;https://www.youtube.com/watch?v=zr2n1fLVasU&quot;</span>,</span><br><span class="line">        <span class="string">&quot;source&quot;</span>: <span class="number">2</span>,</span><br><span class="line">        <span class="string">&quot;category&quot;</span>: <span class="number">24</span>,</span><br><span class="line">        <span class="string">&quot;original_full_path&quot;</span>: <span class="string">&quot;audio/youtube/P0004/YOU0000000315.opus&quot;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">&quot;segment_id&quot;</span>: <span class="string">&quot;AUD0000001043_S0000775&quot;</span>,</span><br><span class="line">        <span class="string">&quot;speaker&quot;</span>: <span class="string">&quot;N/A&quot;</span>,</span><br><span class="line">        <span class="string">&quot;text&quot;</span>: <span class="string">&quot;SIX TOMATOES &lt;PERIOD&gt;&quot;</span>,</span><br><span class="line">        <span class="string">&quot;audio&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;path&quot;</span>: <span class="string">&quot;xs_chunks_0000/AUD0000001043_S0000775.wav&quot;</span>,</span><br><span class="line">            <span class="string">&quot;array&quot;</span>: array(</span><br><span class="line">                [</span><br><span class="line">                    <span class="number">1.43432617e-03</span>,</span><br><span class="line">                    <span class="number">1.37329102e-03</span>,</span><br><span class="line">                    <span class="number">1.31225586e-03</span>,</span><br><span class="line">                    ...,</span><br><span class="line">                    -<span class="number">6.10351562e-05</span>,</span><br><span class="line">                    -<span class="number">1.22070312e-04</span>,</span><br><span class="line">                    -<span class="number">1.83105469e-04</span>,</span><br><span class="line">                ]</span><br><span class="line">            ),</span><br><span class="line">            <span class="string">&quot;sampling_rate&quot;</span>: <span class="number">16000</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">&quot;begin_time&quot;</span>: <span class="number">3673.96</span>,</span><br><span class="line">        <span class="string">&quot;end_time&quot;</span>: <span class="number">3675.26</span>,</span><br><span class="line">        <span class="string">&quot;audio_id&quot;</span>: <span class="string">&quot;AUD0000001043&quot;</span>,</span><br><span class="line">        <span class="string">&quot;title&quot;</span>: <span class="string">&quot;Asteroid of Fear&quot;</span>,</span><br><span class="line">        <span class="string">&quot;url&quot;</span>: <span class="string">&quot;http//www.archive.org/download/asteroid_of_fear_1012_librivox/asteroid_of_fear_1012_librivox_64kb_mp3.zip&quot;</span>,</span><br><span class="line">        <span class="string">&quot;source&quot;</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="string">&quot;category&quot;</span>: <span class="number">28</span>,</span><br><span class="line">        <span class="string">&quot;original_full_path&quot;</span>: <span class="string">&quot;audio/audiobook/P0011/AUD0000001043.opus&quot;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>流式处理模式可以助力你的研究进入更高的阶段：现在你不仅可以利用庞大的数据集，而且可以在无需担忧硬盘空间的情况下使用多个数据集来评估你的系统。与使用单个数据集进行评估相比，多数据集评估可以更好地体现系统的泛化性能。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">HUI</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/10/08/Audio_Course(1)/">http://example.com/2024/10/08/Audio_Course(1)/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">HUI</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/43670b.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/10/08/Audio_Course(2)/" title="Audio课程（二）- 音频应用的入门介绍"><img class="cover" src="/img/43670b.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Audio课程（二）- 音频应用的入门介绍</div></div></a></div><div class="next-post pull-right"><a href="/2024/10/07/BatchNormAndLayerNorm/" title="BatchNorm与LayerNorm的区别"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">BatchNorm与LayerNorm的区别</div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><span id="switch-btn"></span><span class="second-comment">Disqus</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="disqus_thread"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/87788970_p0_master1200.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">HUI</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">33</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/kalabiqlx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:kalabiqlx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#audio%E8%AF%BE%E7%A8%8B%E4%B8%80-%E9%9F%B3%E9%A2%91%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86"><span class="toc-text"> Audio课程（一）- 音频数据处理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9F%B3%E9%A2%91%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E5%85%A5%E9%97%A8"><span class="toc-text"> 音频数据处理入门</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%87%E6%A0%B7%E8%BF%87%E7%A8%8B%E5%92%8C%E9%87%87%E6%A0%B7%E7%8E%87"><span class="toc-text"> 采样过程和采样率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%85%E5%80%BC%E5%92%8C%E4%BD%8D%E6%B7%B1%E5%BA%A6"><span class="toc-text"> 幅值和位深度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9F%B3%E9%A2%91%E7%9A%84%E6%B3%A2%E5%BD%A2%E8%A1%A8%E7%A4%BA"><span class="toc-text"> 音频的波形表示</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%91%E8%B0%B1%E5%9B%BE"><span class="toc-text"> 频谱图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%B6%E9%A2%91%E8%B0%B1"><span class="toc-text"> 时频谱</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A2%85%E5%B0%94%E6%97%B6%E9%A2%91%E8%B0%B1"><span class="toc-text"> 梅尔时频谱</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8A%A0%E8%BD%BD%E9%9F%B3%E9%A2%91%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text"> 加载音频数据集</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9F%B3%E9%A2%91%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-text"> 音频数据集的预处理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9F%B3%E9%A2%91%E9%87%8D%E9%87%87%E6%A0%B7"><span class="toc-text"> 音频重采样</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%87%E6%BB%A4%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text"> 过滤数据集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9F%B3%E9%A2%91%E6%95%B0%E6%8D%AE%E7%9A%84%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-text"> 音频数据的预处理</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%9F%B3%E9%A2%91%E6%95%B0%E6%8D%AE%E7%9A%84%E6%B5%81%E5%BC%8F%E5%8A%A0%E8%BD%BD"><span class="toc-text"> 音频数据的流式加载</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/10/08/Audio_Course(5.1)/" title="Audio课程（五）- 自动语音识别(ASR)"><img src="/img/43670b.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Audio课程（五）- 自动语音识别(ASR)"/></a><div class="content"><a class="title" href="/2024/10/08/Audio_Course(5.1)/" title="Audio课程（五）- 自动语音识别(ASR)">Audio课程（五）- 自动语音识别(ASR)</a><time datetime="2024-10-08T14:50:33.000Z" title="发表于 2024-10-08 22:50:33">2024-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/08/Audio_Course(4)/" title="Audio课程（四）- 构建音频流派分类器"><img src="/img/43670b.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Audio课程（四）- 构建音频流派分类器"/></a><div class="content"><a class="title" href="/2024/10/08/Audio_Course(4)/" title="Audio课程（四）- 构建音频流派分类器">Audio课程（四）- 构建音频流派分类器</a><time datetime="2024-10-08T14:47:33.000Z" title="发表于 2024-10-08 22:47:33">2024-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/08/Audio_Course(3)/" title="Audio课程（三）- 音频Transformer架构"><img src="/img/43670b.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Audio课程（三）- 音频Transformer架构"/></a><div class="content"><a class="title" href="/2024/10/08/Audio_Course(3)/" title="Audio课程（三）- 音频Transformer架构">Audio课程（三）- 音频Transformer架构</a><time datetime="2024-10-08T14:39:33.000Z" title="发表于 2024-10-08 22:39:33">2024-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/08/Audio_Course(2)/" title="Audio课程（二）- 音频应用的入门介绍"><img src="/img/43670b.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Audio课程（二）- 音频应用的入门介绍"/></a><div class="content"><a class="title" href="/2024/10/08/Audio_Course(2)/" title="Audio课程（二）- 音频应用的入门介绍">Audio课程（二）- 音频应用的入门介绍</a><time datetime="2024-10-08T14:38:33.000Z" title="发表于 2024-10-08 22:38:33">2024-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/08/Audio_Course(1)/" title="Audio课程（一）- 音频数据处理"><img src="/img/43670b.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Audio课程（一）- 音频数据处理"/></a><div class="content"><a class="title" href="/2024/10/08/Audio_Course(1)/" title="Audio课程（一）- 音频数据处理">Audio课程（一）- 音频数据处理</a><time datetime="2024-10-08T14:30:33.000Z" title="发表于 2024-10-08 22:30:33">2024-10-08</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/43670b.png')"><div id="footer-wrap"><div class="copyright">&copy;2024 By HUI</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script><script>(() => {
+  const disqus_config = function () {
+    this.page.url = 'http://example.com/2024/10/08/Audio_Course(1)/'
+    this.page.identifier = '/2024/10/08/Audio_Course(1)/'
+    this.page.title = 'Audio课程（一）- 音频数据处理'
+  }
+
+  const disqusReset = () => {
+    window.DISQUS && window.DISQUS.reset({
+      reload: true,
+      config: disqus_config
+    })
+  }
+
+  btf.addGlobalFn('themeChange', disqusReset, 'disqus')
+
+  const loadDisqus = () =>{
+    if (window.DISQUS) disqusReset()
+    else {
+      const script = document.createElement('script')
+      script.src = 'https://.disqus.com/embed.js'
+      script.setAttribute('data-timestamp', +new Date())
+      document.head.appendChild(script)
+    }
+  }
+
+  const getCount = async() => {
+    try {
+      const eleGroup = document.querySelector('#post-meta .disqus-comment-count')
+      if (!eleGroup) return
+      const cleanedLinks = eleGroup.href.replace(/#post-comment$/, '')
+
+      const res = await fetch(`https://disqus.com/api/3.0/threads/set.json?forum=&api_key=&thread:link=${cleanedLinks}`,{
+        method: 'GET'
+      })
+      const result = await res.json()
+
+      const count = result.response.length ? result.response[0].posts : 0
+      eleGroup.textContent = count
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  if ('Valine' === 'Disqus' || !false) {
+    if (false) btf.loadComment(document.getElementById('disqus_thread'), loadDisqus)
+    else {
+      loadDisqus()
+      GLOBAL_CONFIG_SITE.isPost && getCount()
+    }
+  } else {
+    window.loadOtherComment = loadDisqus
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>
