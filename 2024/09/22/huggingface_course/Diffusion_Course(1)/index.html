@@ -1,0 +1,334 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Diffusion课程（一）- 介绍 | HUI</title><meta name="author" content="HUI"><meta name="copyright" content="HUI"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="转载自：https:&#x2F;&#x2F;huggingface.co&#x2F;learn&#x2F;diffusion-course  概述  什么是扩散模型 扩散模型是对“生成模型”的算法的相对较新的补充。生成模型的目标是在给定大量训练示例的情况下学习如何生成数据，例如图像或音频。一个好的生成模型将创建一组类似于训练数据的多样化输出，而不是精确的副本。扩散模型如何实现这一目标？为了说明目的，让我们重点关注图像生成案例。  扩散模">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Diffusion课程（一）- 介绍">
+<meta property="og:url" content="http://example.com/2024/09/22/huggingface_course/Diffusion_Course(1)/index.html">
+<meta property="og:site_name" content="HUI">
+<meta property="og:description" content="转载自：https:&#x2F;&#x2F;huggingface.co&#x2F;learn&#x2F;diffusion-course  概述  什么是扩散模型 扩散模型是对“生成模型”的算法的相对较新的补充。生成模型的目标是在给定大量训练示例的情况下学习如何生成数据，例如图像或音频。一个好的生成模型将创建一组类似于训练数据的多样化输出，而不是精确的副本。扩散模型如何实现这一目标？为了说明目的，让我们重点关注图像生成案例。  扩散模">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/87788970_p0_master1200.jpg">
+<meta property="article:published_time" content="2024-09-22T09:47:07.000Z">
+<meta property="article:modified_time" content="2024-09-22T11:59:16.801Z">
+<meta property="article:author" content="HUI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/87788970_p0_master1200.jpg"><link rel="shortcut icon" href="/img/122061154_p0_master1200.jpg"><link rel="canonical" href="http://example.com/2024/09/22/huggingface_course/Diffusion_Course(1)/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Diffusion课程（一）- 介绍',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-09-22 19:59:16'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/bronya.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/87788970_p0_master1200.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">33</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="HUI"><img class="site-icon" src="/img/319E33068A7ED73BAE7EB48FCE321DD4.jpg"/><span class="site-name">HUI</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Diffusion课程（一）- 介绍</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-09-22T09:47:07.000Z" title="发表于 2024-09-22 17:47:07">2024-09-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-09-22T11:59:16.801Z" title="更新于 2024-09-22 19:59:16">2024-09-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/HuggingFace/">HuggingFace</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/HuggingFace/Diffusion/">Diffusion</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Diffusion课程（一）- 介绍"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2024/09/22/huggingface_course/Diffusion_Course(1)/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/2024/09/22/huggingface_course/Diffusion_Course(1)/" itemprop="commentCount"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>转载自：<a target="_blank" rel="noopener" href="https://huggingface.co/learn/diffusion-course">https://huggingface.co/learn/diffusion-course</a></p>
+<h1 id="概述"><a class="markdownIt-Anchor" href="#概述"></a> 概述</h1>
+<h2 id="什么是扩散模型"><a class="markdownIt-Anchor" href="#什么是扩散模型"></a> 什么是扩散模型</h2>
+<p><strong>扩散模型</strong>是对“生成模型”的算法的相对较新的补充。<strong>生成模型</strong>的目标是在给定大量训练示例的情况下学习如何<strong>生成</strong>数据，例如图像或音频。一个好的生成模型将创建一组<strong>类似于训练数据</strong>的<strong>多样化</strong>输出，而不是精确的副本。扩散模型如何实现这一目标？为了说明目的，让我们重点关注图像生成案例。</p>
+<p><img src="096e8199ad5b.png" alt></p>
+<p>扩散模型成功的秘诀在于扩散过程的迭代性质。生成从<strong>随机噪声</strong>开始，但经过多个步骤逐渐细化，直到出现输出图像。在每一步中，模型都会估计我们如何从当前输入变为完全去噪的版本。<font color="red">然而，由于我们在每一步中只进行很小的更改，因此早期阶段（预测最终输出极其困难）的估计中的任何错误都可以在以后的更新中纠正。</font></p>
+<p>与其他一些类型的生成模型相比，模型的训练相对简单。我们重复</p>
+<ol>
+<li>从训练数据中加载一些图像。</li>
+<li>添加不同数量的噪声。请记住，我们希望模型能够很好地估计如何“修复”(去噪)极其嘈杂的图像和接近完美的图像。</li>
+<li>将图像的噪声版本输入模型。</li>
+<li>评估模型在对这些输入进行去噪方面的表现 。</li>
+<li>使用此信息来更新模型权重然后重复。</li>
+</ol>
+<p>为了使用经过训练的模型生成新图像，我们从完全随机的输入开始，并重复输入少量更新后的图像给模型，每次根据模型预测进行少量更新。正如我们将看到的，有许多采样方法试图简化此过程，以便我们可以用尽可能少的步骤生成良好的图像。</p>
+<blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://huggingface.co/blog/annotated-diffusion">带注释的扩散模型</a>是对 DDPM 背后的代码和理论的非常深入的演练，其中的数学和代码显示了所有不同的组件。它还链接到许多论文以供进一步</li>
+<li>Hugging Face 关于<a target="_blank" rel="noopener" href="https://huggingface.co/docs/diffusers/training/unconditional_training">无条件图像生成</a>的文档，提供了有关如何使用官方训练示例脚本训练扩散模型的一些示例，包括显示如何创建自己的数据集的代码。</li>
+<li>关于扩散模型的 AI 茶歇视频： <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=344w5h24-h8">https://www.youtube.com/watch?v=</a> 344w5h24-h8</li>
+<li>Yannic Kilcher 关于 DDPM 的视频： <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=W-O7AZNzbzQ">https://www.youtube.com/watch?v=W</a> -O7AZNzbzQ</li>
+</ul>
+</blockquote>
+<h1 id="diffusers简介"><a class="markdownIt-Anchor" href="#diffusers简介"></a> Diffusers简介</h1>
+<h2 id="1设置"><a class="markdownIt-Anchor" href="#1设置"></a> 1.设置</h2>
+<p>运行以下单元来安装Diffusers库以及一些其他要求：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%pip install -qq -U diffusers datasets transformers accelerate ftfy pyarrow==<span class="number">9.0</span><span class="number">.0</span></span><br></pre></td></tr></table></figure>
+<p>使用命令行 ( <code>huggingface-cli login</code> ) 或运行以下单元格使用此令牌登录：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> huggingface_hub <span class="keyword">import</span> notebook_login</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>notebook_login()</span><br><span class="line"></span><br><span class="line">Login successful</span><br><span class="line">Your token has been saved to /root/.huggingface/token</span><br></pre></td></tr></table></figure>
+<p>安装 Git-LFS 来上传你的模型检查点：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">%%capture</span><br><span class="line">!sudo apt -qq install git-lfs</span><br><span class="line">!git config --<span class="keyword">global</span> credential.helper store</span><br></pre></td></tr></table></figure>
+<hr>
+<blockquote>
+<p>以上是hugging face的一些设定</p>
+</blockquote>
+<hr>
+<p><font size="5">导入库并定义一些便利函数</font></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn.functional <span class="keyword">as</span> F</span><br><span class="line"><span class="keyword">from</span> matplotlib <span class="keyword">import</span> pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">show_images</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Given a batch of images x, make a grid and convert to PIL&quot;&quot;&quot;</span></span><br><span class="line">    x = x * <span class="number">0.5</span> + <span class="number">0.5</span>  <span class="comment"># Map from (-1, 1) back to (0, 1)</span></span><br><span class="line">    grid = torchvision.utils.make_grid(x) <span class="comment"># 把图像分为网格图，每行八张</span></span><br><span class="line">    grid_im = grid.detach().cpu().permute(<span class="number">1</span>, <span class="number">2</span>, <span class="number">0</span>).clip(<span class="number">0</span>, <span class="number">1</span>) * <span class="number">255</span> <span class="comment"># （H,W,C)</span></span><br><span class="line">    grid_im = Image.fromarray(np.array(grid_im).astype(np.uint8)) <span class="comment"># 将NumPy数组转换为PIL图像对象,默认为灰度图像</span></span><br><span class="line">    <span class="keyword">return</span> grid_im</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">make_grid</span>(<span class="params">images, size=<span class="number">64</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Given a list of PIL images, stack them together into a line for easy viewing&quot;&quot;&quot;</span></span><br><span class="line">    output_im = Image.new(<span class="string">&quot;RGB&quot;</span>, (size * <span class="built_in">len</span>(images), size)) <span class="comment"># 生成RGB模式的图像,大小为(size =* len(images),size)，默认黑色</span></span><br><span class="line">    <span class="keyword">for</span> i, im <span class="keyword">in</span> <span class="built_in">enumerate</span>(images):</span><br><span class="line">        output_im.paste(im.resize((size, size)), (i * size, <span class="number">0</span>)) <span class="comment"># 传入的im图像resize之后粘贴在原图像上的(i * size, 0)位置</span></span><br><span class="line">    <span class="keyword">return</span> output_im</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Mac users may need device = &#x27;mps&#x27; (untested)</span></span><br><span class="line">device = torch.device(<span class="string">&quot;cuda&quot;</span> <span class="keyword">if</span> torch.cuda.is_available() <span class="keyword">else</span> <span class="string">&quot;cpu&quot;</span>)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ol>
+<li><code>numpy.clip(a, a_min, a_max, out=None)[source]</code>：将数组中的元素限制在a_min, a_max之间，大于a_max的就使得它等于 a_max，小于a_min,的就使得它等于a_min</li>
+<li><code>Image.new</code>与<code>Image.paste</code>:<a target="_blank" rel="noopener" href="https://blog.csdn.net/deliberate_cha/article/details/105843621">python3中PIL库中Image.new方法和paste方法-CSDN博客</a></li>
+<li><code>torchvision.utils.make_grid</code>:<a target="_blank" rel="noopener" href="https://pytorch.org/vision/stable/generated/torchvision.utils.make_grid.html#torchvision.utils.make_grid">torchvision文档</a></li>
+</ol>
+</blockquote>
+<h3 id="whats-to-come"><a class="markdownIt-Anchor" href="#whats-to-come"></a> What’s to Come</h3>
+<p>Stable Diffusion是一个强大的<strong>文本条件</strong>潜在扩散模型。但它有一个缺陷：它不知道你或我长什么样，除非我们足够出名，以至于我们的照片遍布互联网。</p>
+<p><strong>Dreambooth</strong> 让我们可以通过对特定面孔、物体或风格的一些额外了解来创建自己的模型变体。</p>
+<p>下面是一个使用<a target="_blank" rel="noopener" href="https://huggingface.co/sd-dreambooth-library/mr-potato-head">一款名为“土豆头先生”的流行儿童玩具的5张照片</a>训练模型的示例：</p>
+<p>首先，我们加载管道。这将从Hub下载模型权重等。由于这将为一个简单的单行演示下载几 GB 的数据，因此欢迎您跳过此单元并简单地欣赏示例输出！</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> diffusers <span class="keyword">import</span> StableDiffusionPipeline</span><br><span class="line"></span><br><span class="line"><span class="comment"># Check out https://huggingface.co/sd-dreambooth-library for loads of models from the community</span></span><br><span class="line">model_id = <span class="string">&quot;sd-dreambooth-library/mr-potato-head&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Load the pipeline</span></span><br><span class="line">pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float16).to(device)</span><br></pre></td></tr></table></figure>
+<p>管道完成加载后，我们可以使用以下命令生成图像：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">prompt = <span class="string">&quot;an abstract oil painting of sks mr potato head by picasso&quot;</span></span><br><span class="line">image = pipe(prompt, num_inference_steps=<span class="number">50</span>, guidance_scale=<span class="number">7.5</span>).images[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">image</span><br></pre></td></tr></table></figure>
+<h3 id="最小的可用管道"><a class="markdownIt-Anchor" href="#最小的可用管道"></a> 最小的可用管道</h3>
+<p>Diffusers 的核心API分为三个主要组件：</p>
+<ol>
+<li><strong>Pipelines</strong> ：旨在以用户友好的方式从流行的训练扩散模型快速生成样本。</li>
+<li><strong>模型</strong>：用于训练新扩散模型的流行架构，例如<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1505.04597">UNet</a> 。</li>
+<li><strong>调度程序</strong>：用于在<strong>推理</strong>期间从噪声生成图像以及生成用于训练的<strong>噪声图像</strong>的各种技术。</li>
+</ol>
+<p>因此，在本notebook的其余部分中，我们将构建自己的能够生成小蝴蝶图片的pipline。这是最终的结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> diffusers <span class="keyword">import</span> DDPMPipeline</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="comment"># Load the butterfly pipeline</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>butterfly_pipeline = DDPMPipeline.from_pretrained(<span class="string">&quot;johnowhitaker/ddpm-butterflies-32px&quot;</span>).to(device)</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="comment"># Create 8 images</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>images = butterfly_pipeline(batch_size=<span class="number">8</span>).images</span><br><span class="line"></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="comment"># View the result</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>make_grid(images)</span><br></pre></td></tr></table></figure>
+<p><img src="butterfly.jpg" alt></p>
+<h2 id="2下载训练数据集"><a class="markdownIt-Anchor" href="#2下载训练数据集"></a> 2.下载训练数据集</h2>
+<p>在本示例中，我们将使用 Hugging Face Hub 中的图像数据集。具体来说，<a target="_blank" rel="noopener" href="https://huggingface.co/datasets/huggan/smithsonian_butterflies_subset">这是1000张蝴蝶图片集</a>。这是一个非常小的数据集，因此我们还为一些较大的选项添加了注释行。如果您希望使用自己的图像集合，还可以使用注释掉的代码示例从文件夹中加载图片。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torchvision</span><br><span class="line"><span class="keyword">from</span> datasets <span class="keyword">import</span> load_dataset</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> transforms</span><br><span class="line"></span><br><span class="line">dataset = load_dataset(<span class="string">&quot;huggan/smithsonian_butterflies_subset&quot;</span>, split=<span class="string">&quot;train&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Or load images from a local folder</span></span><br><span class="line"><span class="comment"># dataset = load_dataset(&quot;imagefolder&quot;, data_dir=&quot;path/to/folder&quot;)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># We&#x27;ll train on 32-pixel square images, but you can try larger sizes too</span></span><br><span class="line">image_size = <span class="number">32</span></span><br><span class="line"><span class="comment"># You can lower your batch size if you&#x27;re running out of GPU memory</span></span><br><span class="line">batch_size = <span class="number">64</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Define data augmentations</span></span><br><span class="line">preprocess = transforms.Compose(</span><br><span class="line">    [</span><br><span class="line">        transforms.Resize((image_size, image_size)),  <span class="comment"># Resize</span></span><br><span class="line">        transforms.RandomHorizontalFlip(),  <span class="comment"># Randomly flip (data augmentation)</span></span><br><span class="line">        transforms.ToTensor(),  <span class="comment"># Convert to tensor (0, 1)</span></span><br><span class="line">        transforms.Normalize([<span class="number">0.5</span>], [<span class="number">0.5</span>]),  <span class="comment"># Map to (-1, 1)</span></span><br><span class="line">    ]</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">transform</span>(<span class="params">examples</span>):</span><br><span class="line">    images = [preprocess(image.convert(<span class="string">&quot;RGB&quot;</span>)) <span class="keyword">for</span> image <span class="keyword">in</span> examples[<span class="string">&quot;image&quot;</span>]]</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&quot;images&quot;</span>: images&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">dataset.set_transform(transform)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Create a dataloader from the dataset to serve up the transformed images in batches</span></span><br><span class="line">train_dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="3定义调渡程序"><a class="markdownIt-Anchor" href="#3定义调渡程序"></a> 3.定义调渡程序</h2>
+<h2 id="4定义模型"><a class="markdownIt-Anchor" href="#4定义模型"></a> 4.定义模型</h2>
+<h2 id="5创建训练循环"><a class="markdownIt-Anchor" href="#5创建训练循环"></a> 5.创建训练循环</h2>
+<h2 id="6生成图像"><a class="markdownIt-Anchor" href="#6生成图像"></a> 6.生成图像</h2>
+<h3 id="创建管道"><a class="markdownIt-Anchor" href="#创建管道"></a> 创建管道</h3>
+<h3 id="编写采样循环"><a class="markdownIt-Anchor" href="#编写采样循环"></a> 编写采样循环</h3>
+<h2 id="7推送到hub"><a class="markdownIt-Anchor" href="#7推送到hub"></a> 7.推送到hub</h2>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">HUI</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/09/22/huggingface_course/Diffusion_Course(1)/">http://example.com/2024/09/22/huggingface_course/Diffusion_Course(1)/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">HUI</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/87788970_p0_master1200.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/09/23/paper/SwinTransformer/" title="SwinTransformer论文精读"><img class="cover" src="/img/172840755.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">SwinTransformer论文精读</div></div></a></div><div class="next-post pull-right"><a href="/2024/09/22/paper/Bert/" title="Bert原文笔记"><img class="cover" src="/img/IEKTIWS4.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Bert原文笔记</div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><span id="switch-btn"></span><span class="second-comment">Disqus</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="disqus_thread"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/87788970_p0_master1200.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">HUI</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">33</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/kalabiqlx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:kalabiqlx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-text"> 概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%89%A9%E6%95%A3%E6%A8%A1%E5%9E%8B"><span class="toc-text"> 什么是扩散模型</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#diffusers%E7%AE%80%E4%BB%8B"><span class="toc-text"> Diffusers简介</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E8%AE%BE%E7%BD%AE"><span class="toc-text"> 1.设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#whats-to-come"><span class="toc-text"> What’s to Come</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%B0%8F%E7%9A%84%E5%8F%AF%E7%94%A8%E7%AE%A1%E9%81%93"><span class="toc-text"> 最小的可用管道</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E4%B8%8B%E8%BD%BD%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text"> 2.下载训练数据集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E5%AE%9A%E4%B9%89%E8%B0%83%E6%B8%A1%E7%A8%8B%E5%BA%8F"><span class="toc-text"> 3.定义调渡程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E5%AE%9A%E4%B9%89%E6%A8%A1%E5%9E%8B"><span class="toc-text"> 4.定义模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E5%88%9B%E5%BB%BA%E8%AE%AD%E7%BB%83%E5%BE%AA%E7%8E%AF"><span class="toc-text"> 5.创建训练循环</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6%E7%94%9F%E6%88%90%E5%9B%BE%E5%83%8F"><span class="toc-text"> 6.生成图像</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E7%AE%A1%E9%81%93"><span class="toc-text"> 创建管道</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99%E9%87%87%E6%A0%B7%E5%BE%AA%E7%8E%AF"><span class="toc-text"> 编写采样循环</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7%E6%8E%A8%E9%80%81%E5%88%B0hub"><span class="toc-text"> 7.推送到hub</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/10/08/huggingface_course/Audio_Course(5.1)/" title="Audio课程（五）- 自动语音识别(ASR)"><img src="/img/43670b.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Audio课程（五）- 自动语音识别(ASR)"/></a><div class="content"><a class="title" href="/2024/10/08/huggingface_course/Audio_Course(5.1)/" title="Audio课程（五）- 自动语音识别(ASR)">Audio课程（五）- 自动语音识别(ASR)</a><time datetime="2024-10-08T14:50:33.000Z" title="发表于 2024-10-08 22:50:33">2024-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/08/huggingface_course/Audio_Course(4)/" title="Audio课程（四）- 构建音频流派分类器"><img src="/img/43670b.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Audio课程（四）- 构建音频流派分类器"/></a><div class="content"><a class="title" href="/2024/10/08/huggingface_course/Audio_Course(4)/" title="Audio课程（四）- 构建音频流派分类器">Audio课程（四）- 构建音频流派分类器</a><time datetime="2024-10-08T14:47:33.000Z" title="发表于 2024-10-08 22:47:33">2024-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/08/huggingface_course/Audio_Course(3)/" title="Audio课程（三）- 音频Transformer架构"><img src="/img/43670b.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Audio课程（三）- 音频Transformer架构"/></a><div class="content"><a class="title" href="/2024/10/08/huggingface_course/Audio_Course(3)/" title="Audio课程（三）- 音频Transformer架构">Audio课程（三）- 音频Transformer架构</a><time datetime="2024-10-08T14:39:33.000Z" title="发表于 2024-10-08 22:39:33">2024-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/08/huggingface_course/Audio_Course(2)/" title="Audio课程（二）- 音频应用的入门介绍"><img src="/img/43670b.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Audio课程（二）- 音频应用的入门介绍"/></a><div class="content"><a class="title" href="/2024/10/08/huggingface_course/Audio_Course(2)/" title="Audio课程（二）- 音频应用的入门介绍">Audio课程（二）- 音频应用的入门介绍</a><time datetime="2024-10-08T14:38:33.000Z" title="发表于 2024-10-08 22:38:33">2024-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/08/huggingface_course/Audio_Course(1)/" title="Audio课程（一）- 音频数据处理"><img src="/img/43670b.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Audio课程（一）- 音频数据处理"/></a><div class="content"><a class="title" href="/2024/10/08/huggingface_course/Audio_Course(1)/" title="Audio课程（一）- 音频数据处理">Audio课程（一）- 音频数据处理</a><time datetime="2024-10-08T14:30:33.000Z" title="发表于 2024-10-08 22:30:33">2024-10-08</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By HUI</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script><script>(() => {
+  const disqus_config = function () {
+    this.page.url = 'http://example.com/2024/09/22/huggingface_course/Diffusion_Course(1)/'
+    this.page.identifier = '/2024/09/22/huggingface_course/Diffusion_Course(1)/'
+    this.page.title = 'Diffusion课程（一）- 介绍'
+  }
+
+  const disqusReset = () => {
+    window.DISQUS && window.DISQUS.reset({
+      reload: true,
+      config: disqus_config
+    })
+  }
+
+  btf.addGlobalFn('themeChange', disqusReset, 'disqus')
+
+  const loadDisqus = () =>{
+    if (window.DISQUS) disqusReset()
+    else {
+      const script = document.createElement('script')
+      script.src = 'https://.disqus.com/embed.js'
+      script.setAttribute('data-timestamp', +new Date())
+      document.head.appendChild(script)
+    }
+  }
+
+  const getCount = async() => {
+    try {
+      const eleGroup = document.querySelector('#post-meta .disqus-comment-count')
+      if (!eleGroup) return
+      const cleanedLinks = eleGroup.href.replace(/#post-comment$/, '')
+
+      const res = await fetch(`https://disqus.com/api/3.0/threads/set.json?forum=&api_key=&thread:link=${cleanedLinks}`,{
+        method: 'GET'
+      })
+      const result = await res.json()
+
+      const count = result.response.length ? result.response[0].posts : 0
+      eleGroup.textContent = count
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  if ('Valine' === 'Disqus' || !false) {
+    if (false) btf.loadComment(document.getElementById('disqus_thread'), loadDisqus)
+    else {
+      loadDisqus()
+      GLOBAL_CONFIG_SITE.isPost && getCount()
+    }
+  } else {
+    window.loadOtherComment = loadDisqus
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>
