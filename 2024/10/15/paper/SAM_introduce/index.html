@@ -1,0 +1,423 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>语义分割与SAM精读 | HUI</title><meta name="author" content="HUI"><meta name="copyright" content="HUI"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="原论文地址：[2304.02643] Segment Anything (arxiv.org) 缺少的部分暂时不更，感觉不是那么重要。  语义分割 语义分割是对像素粒度的分类，是一种dense classification的任务。常用于医学与自动驾驶领域 语义分割的结果也可以作为对图像的抽象表达，提取更有代表性的特征，作为其他任务的输入。  语义分割数据集 PascalVOC Cityscape(">
+<meta property="og:type" content="article">
+<meta property="og:title" content="语义分割与SAM精读">
+<meta property="og:url" content="http://example.com/2024/10/15/paper/SAM_introduce/index.html">
+<meta property="og:site_name" content="HUI">
+<meta property="og:description" content="原论文地址：[2304.02643] Segment Anything (arxiv.org) 缺少的部分暂时不更，感觉不是那么重要。  语义分割 语义分割是对像素粒度的分类，是一种dense classification的任务。常用于医学与自动驾驶领域 语义分割的结果也可以作为对图像的抽象表达，提取更有代表性的特征，作为其他任务的输入。  语义分割数据集 PascalVOC Cityscape(">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/204405684.png">
+<meta property="article:published_time" content="2024-10-15T03:51:38.000Z">
+<meta property="article:modified_time" content="2024-10-17T04:48:54.344Z">
+<meta property="article:author" content="HUI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/204405684.png"><link rel="shortcut icon" href="/img/122061154_p0_master1200.jpg"><link rel="canonical" href="http://example.com/2024/10/15/paper/SAM_introduce/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '语义分割与SAM精读',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-17 12:48:54'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/bronya.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/87788970_p0_master1200.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/204405684.png')"><nav id="nav"><span id="blog-info"><a href="/" title="HUI"><img class="site-icon" src="/img/319E33068A7ED73BAE7EB48FCE321DD4.jpg"/><span class="site-name">HUI</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">语义分割与SAM精读</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-15T03:51:38.000Z" title="发表于 2024-10-15 11:51:38">2024-10-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-17T04:48:54.344Z" title="更新于 2024-10-17 12:48:54">2024-10-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BA%E6%96%87/">论文</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BA%E6%96%87/CV/">CV</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">5.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>16分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="语义分割与SAM精读"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2024/10/15/paper/SAM_introduce/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/2024/10/15/paper/SAM_introduce/" itemprop="commentCount"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>原论文地址：[<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.02643">2304.02643] Segment Anything (arxiv.org)</a></p>
+<p>缺少的部分暂时不更，感觉不是那么重要。</p>
+<h1 id="语义分割"><a class="markdownIt-Anchor" href="#语义分割"></a> 语义分割</h1>
+<p>语义分割是对像素粒度的分类，是一种dense classification的任务。常用于<strong>医学</strong>与<strong>自动驾驶</strong>领域</p>
+<p>语义分割的结果也可以作为对图像的抽象表达，提取更有代表性的特征，作为其他任务的输入。</p>
+<h2 id="语义分割数据集"><a class="markdownIt-Anchor" href="#语义分割数据集"></a> 语义分割数据集</h2>
+<p>PascalVOC</p>
+<p>Cityscape(主要用于自动驾驶)</p>
+<h2 id="语义分割模型"><a class="markdownIt-Anchor" href="#语义分割模型"></a> 语义分割模型</h2>
+<p><strong>FCN</strong>：可以适应任意输入大小。主要有基于<strong>UNet</strong>和基于<strong>带孔卷积</strong>两种类型。</p>
+<p><strong>U-Net</strong>:下采样丢掉冗余信息。</p>
+<p><strong>带孔卷积</strong>：conv与pool可以扩大感受野，减少计算量，提高特征的提成程度。但其过程本身就会丢失信息。带孔卷积不对输入进行密集采样，而是使用间隔若干位置采样的方式，在不丢失信息的前提下，提升感受野的大小，带来更好的信息提取能力。</p>
+<p><strong>Transformer+语义分割</strong>：ViT一开始感受野就是全局图像</p>
+<p><img src="170853476.png" alt></p>
+<h2 id="交互式分割"><a class="markdownIt-Anchor" href="#交互式分割"></a> 交互式分割</h2>
+<p>交互式分割：由用户提供少量交互完成对目标物分割的操作。交互的种类可以有多种，包括点击(point)，划线(text)，画框(box)等。</p>
+<p>为何要用交互式分割：在传统的标注工具中，比如LabelMe和LabelImage中，需要大量的时间进行极为小心的操作，费事费力。交互式分割算法能够使用有限次的点击，完成图片的标注，提升效率降低成本。</p>
+<h1 id="sam"><a class="markdownIt-Anchor" href="#sam"></a> SAM</h1>
+<p><img src="204405684.png" alt></p>
+<p>图 1：我们志在通过引入三个相互关联的组件来构建分割的基础模型：可提示的分割任务、支持数据注释并通过提示工程zero-shot迁移到一系列任务的分割模型 (SAM)，以及用于收集数据的引擎 SA-1B ，其包含10亿个mask。</p>
+<blockquote>
+<ul>
+<li>整体结构基于Transoformer进行开发，针对分割任务进行了修改。</li>
+<li>将NLP中的prompt范式引入到了CV领域中，进一步统一了不同任务和数据模态之间的特点。</li>
+<li>支持基于零样本的分割。</li>
+<li>统一了分割的下游应用，说明了CV领域也存在大模型的可能。</li>
+</ul>
+</blockquote>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<p>该项目构建了迄今为止最大的分割数据集，在1100 万张的图像上包含超过10 亿个masks。SAM的模型被设计为可以提示的，因此它可以通过zero-shot迁移到新的任务上。SAM的zero-shot能力可以与之前的完全监督结果相媲美甚至优于之前的结果。demo网址:<a target="_blank" rel="noopener" href="https://segment-anything.com">https://segment-anything.com</a>.</p>
+<h2 id="1引言"><a class="markdownIt-Anchor" href="#1引言"></a> 1.引言</h2>
+<p>NLP任务通过提示工程实现了强大的零样本和少样本泛化能力，将<strong>基础模型</strong>推广到训练期间没见过的任务和数据分布。使得一些模型的零样本和少样本性能与微调模型相比出奇更好。</p>
+<p>计算机视觉领域也对基础模型进行了探索，尽管在视觉和语言编码器方面取得了很大进展，但计算机视觉还包含超出此范围的很多问题，<font color="red">造成这些问题的原因再于没有丰富的训练数据。</font></p>
+<p>在这项工作中，我们的目标是建立图像分割的基础模型。它是一个可提示的模型，在广泛的数据集上对其进行预训练并具有强大泛化能力。通过该模型，我们可以使用提示工程解决一系列新数据分布的下游分割问题。</p>
+<p>该项目的成功取决于三个组成部分：<strong>任务</strong>、<strong>模型</strong>和<strong>数据</strong>。我们解决了以下有关图像分割的问题：</p>
+<ul>
+<li><strong>什么任务将实现零样本泛化</strong></li>
+</ul>
+<p>该任务要足够通用，可以提供强大的预训练目标并支持广泛的下游应用程序。</p>
+<ul>
+<li><strong>对应的模型架构是什么</strong></li>
+</ul>
+<p>该模型要支持灵活的提示，并能在提示时实时输出分割的mask以允许交互使用</p>
+<ul>
+<li><strong>哪些数据可以为该任务和模型提供支持</strong></li>
+</ul>
+<p>该项目需要多样化的大规模数据源。但是没有网络规模的用于分割的数据源，因此我们构建了一个“数据引擎”，使用高效模型协助数据收集的同时，使用新收集的数据改进模型。</p>
+<p><strong>任务</strong>(第二章)：受NLP工作的启发，我们提出了提示分割任务，其目标是在给定任何分割提示的情况下返回有效的分割掩码（见图 1a）。有效输出掩码意味着，即使提示不明确并且可能引用多个对象（例如，衬衫上的点可能表示衬衫或穿着它的人），输出也应该是合理的掩码至少其中一个对象。我们使用提示分割任务作为预训练目标，并通过提示工程解决一般下游分割任务。</p>
+<p><strong>模型</strong>(第三章)：实时的分割任务和实际使用约束了模型架构。这意味着该模型必须支持灵活的prompt，需要实时计算mask以允许交互使用，而且必须具有模糊性意识。SAM可以同时满足这三种约束，它包括强大的图像编码器来计算图像embedding，提示编码器来emedding提示，然后将两个信息源组合在预测分割mask的轻量级maskdecoder中。这种架构使得使得可以通过不同的提示来重复使用相同的图像嵌入。为了使 SAM 能够感知歧义，我们将其设计为预测单个提示的多个掩码，从而使 SAM 能够自然地处理歧义，例如衬衫与人的示例。</p>
+<p><strong>数据引擎</strong>(第四章)：为了实现强泛化能力，有必要在大量且多样化的掩模上训练 SAM，超出任何现有的分割数据集。虽然基础模型的典型方法是在线获取数据，但掩码并不丰富，我们的解决方案是构建一个“数据引擎”，其分为三个阶段：<strong>辅助手动</strong>、<strong>半自动</strong>和<strong>全自动</strong>。(见官网demo)</p>
+<ul>
+<li>第一阶段，SAM 协助注释者注释掩模，类似于经典的交互式分割设置。</li>
+<li>第二阶段，SAM 可以通过提示可能的对象位置来自动为对象子集生成掩码，而注释器则专注于注释其余对象，从而帮助增加掩码多样性。</li>
+<li>最后阶段，我们使用前景点的规则网格来prompt SAM，每张图像平均可以产生100个高质量掩模。</li>
+</ul>
+<p><strong>数据集</strong>(第五章)：</p>
+<p>我们的最终数据集 <strong>SA-1B</strong> 包含来自 1100 万张得到许可和隐私保护图像的，超过1B个掩模（见图 2）。 SA-1B 使用我们数据引擎的最后阶段完全自动收集，其掩码比任何现有分割数据集多400 倍。我们希望 SA-1B 成为旨在构建新基础模型的研究的宝贵资源。</p>
+<p><img src="225453448.png" alt></p>
+<p>图 2：SA-1B带有叠加mask的示例图像。 SA-1B包含11M多样化、高分辨率、许可和隐私保护图像和1.1B高质量分割掩模。这些mask由 SAM 完全自动注释，它们具有高质量和多样性。我们根据每张图像的掩码数量对图像进行分组以进行可视化（每张图像平均有100 个掩码）。</p>
+<p><strong>Responsible AI</strong>(第六章):</p>
+<p><strong>实验</strong>(第七章)</p>
+<p><strong>发布</strong>：</p>
+<h2 id="2分割任务"><a class="markdownIt-Anchor" href="#2分割任务"></a> 2.分割任务</h2>
+<p><img src="232013188.png" alt="image-20241015232013188"></p>
+<center>图 3：每列显示 SAM 根据单个模糊点提示（绿色圆圈）生成的 3 个有效掩码。</center>
+<h2 id="3模型架构"><a class="markdownIt-Anchor" href="#3模型架构"></a> 3.模型架构</h2>
+<p><img src="172512625.png" alt></p>
+<p>图 4： SAM概述。图像编码器输出图像嵌入，然后可以通过各种输入提示有效地查询该图像嵌入，以快速生成对象蒙版。对于多个对象的不明确提示，SAM 可以输出多个有效掩码和相关的置信度分数。</p>
+<p>SAM 具有三个组件，如图 4 所示</p>
+<ul>
+<li><strong>图像编码器image encoder</strong>:ViT16/H+MAE</li>
+<li><strong>灵活提示编码器Prompt Encoder</strong></li>
+<li><strong>快速掩模解码器Mask Decoder</strong></li>
+</ul>
+<p>模型建立在 Transformer 视觉模型的基础上，并针对实时性能进行了特定的权衡。附录A中提供了详细信息。</p>
+<p><strong>图像编码器</strong>：使用 MAE预训练的视觉变换器 (ViT) 最低限度地适应处理高分辨率输入。图像编码器每张图像运行一次，并且可以在prompt之前应用。</p>
+<blockquote>
+<p><strong>MAE</strong>:类似于提升模型泛化能力的一种策略,不要理解为一种模型</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/439554945">别再无聊地吹捧了，一起来动手实现 MAE(Masked Autoencoders Are Scalable Vision Learners) 玩玩吧！ - 知乎 (zhihu.com)</a></p>
+<p><img src="cd3cc886db5f583e76779a5692192a87_1440w.png" alt></p>
+<ul>
+<li>将输入的patch随机mask，只将unmasked的patch输入Encoder中进行编码</li>
+<li>使用mask token填充被mask的patch，并输入到decoder中，对输入进行复原</li>
+</ul>
+<p>让模型通过随机采样掌握全局特征，push模型去具有这个能力。mask即缓解了信息的冗余，同时不同patch之间的合作得到进一步强化，慢慢地引入了对于图像当中某个局部的信息提取能力。</p>
+</blockquote>
+<p><strong>提示编码器</strong>：考虑两种提示：<strong>稀疏</strong>（点、框、文本）和<strong>密集</strong>（掩模）。通过位置编码来表示点和框，使用 CLIP中现成的文本编码器对每种提示类型和自由格式文本进行学习嵌入。使用卷积来embedding密集提示（即掩码），并与图像嵌入按元素求和。</p>
+<p><strong>掩码解码器</strong>：掩码解码器有效地将<strong>图像嵌入</strong>、<strong>提示嵌入</strong>和输出token映射到mask。该设计在Transformer 解码器块后跟动态掩模预测头。我们修改后的解码器块使用两个方向的prompt自注意力和交叉注意力（prompt图像嵌入，反之亦然）来更新所有嵌入。运行两个块后，我们对图像嵌入进行上采样，并且MLP 将输出token映射到动态线性分类器，然后计算每个图像位置的mask前景概率。</p>
+<p><strong>解决歧义</strong>：对于一个输出，如果给出不明确的提示，模型将对多个有效masl进行平均。为了解决这个问题，我们修改模型以预测单个提示的多个输出掩码(见图 3)。我们发现 3 个掩码输出足以解决最常见的情况(嵌套mask通常最多三层深度：整体、部分和子部分)。在训练期间，我们仅反向传播mask上的最小损失。为了对掩模进行排名，模型预测每个掩模的置信度得分(IoU)。效率。<font color="red">整体模型设计很大程度上是出于效率的考虑。给定预先计算的图像嵌入，提示编码器和掩码解码器在 Web 浏览器中的 CPU 上运行，耗时约 50 毫秒。这种运行时性能可以为我们的模型提供无缝、实时的交互式提示。</font></p>
+<p><strong>损失和训练</strong>。我们使用<strong>focal loss</strong>和<strong>dice loss</strong>的线性组合来监督掩模预测。我们使用geometric prompts的混合来训练可提示的分割任务（有关文本提示，请参见第 7.5 节）。我们通过在每个掩码中随机采样11 轮提示来模拟交互，从而使SAM能够无缝集成到我们的数据引擎中。</p>
+<h2 id="4数据引擎"><a class="markdownIt-Anchor" href="#4数据引擎"></a> 4.数据引擎</h2>
+<h2 id="5数据集"><a class="markdownIt-Anchor" href="#5数据集"></a> 5.数据集</h2>
+<h2 id="8讨论"><a class="markdownIt-Anchor" href="#8讨论"></a> 8.讨论</h2>
+<h2 id="附录"><a class="markdownIt-Anchor" href="#附录"></a> 附录</h2>
+<h3 id="a模型与任务细节"><a class="markdownIt-Anchor" href="#a模型与任务细节"></a> A.模型与任务细节</h3>
+<p><img src="172512625.png" alt></p>
+<p><strong>1.Image encoder</strong>。Image encoder可以是任何输出 C×H×W image embedding的网络。出于可扩展性和强大的预训练的考虑，我们使用MAE预训练的 Vision Transformer (ViT) 在最小调整的情况下来处理高分辨率输入，特别是具有 14×14 窗口注意力的 ViT-H/16和四个等距的全局注意力块。图像编码器的输出是输入图像缩小了16倍的embedding。由于我们的目标是实时处理每个提示，因此我们可以承受大量的图像编码器 FLOPs，因为它们每个图像而不是每个提示计算一次。</p>
+<p>我们使用通过重新缩放图像并填充短边以获得获得1024×1024分辨率的输入图像。因此图像嵌入是 64×64。为了减少通道维度，我们使用 1×1 卷积来获得 256 个通道，然后使用同样具有 256 个通道的 3×3 卷积。每个卷积后面都有一个Layer Norm。</p>
+<p><strong>2.Prompt encoder</strong>：</p>
+<p><strong>稀疏的prompt</strong>映射为256维向量嵌入：</p>
+<ul>
+<li><strong>point</strong>被表示为该点的位置编码+两个可学习embedding之一，这两个可学习embedding表示该点是在前景(<font color="YellowGreen">鼠标左键点击</font>)还是背景(<font color="YellowGreen">鼠标右键点击</font>)。</li>
+<li><strong>box</strong>由嵌入对表示：左上角的位置编码+用于表示“左上角”这个含义的可学习嵌入；右下角的位置编码+用于表示“右下角”这个含义的可学习嵌入。</li>
+<li><strong>自由格式的text</strong>：使用 CLIP 中的文本编码器（通常任何文本编码器都是可能的）。我们将在本节的其余部分重点讨论<strong>几何提示</strong>，并在附录D.5 中深入讨论<strong>文本提示</strong>。</li>
+</ul>
+<p><strong>密集的prompt</strong>（即mask）与图像具有空间对应关系。输入的mask的大小是原始图像的4倍下采样，然后使用输出通道分别为 4 和 16 的两个 2×2、步长 2 卷积将分辨率再缩小 4 倍。最终的 1×1 卷积将通道维度映射到 256。每一层都由 GELU 激活和层归一化分隔。然后按元素添加mask和image embedding嵌入，如果没有mask prompt，则将表示“无mask”的可学习嵌入添加到每个图像嵌入位置。</p>
+<p><strong>3.轻量级mask decoder</strong>。该模块有效地将图像嵌入和一组提示嵌入映射到输出掩码。为了结合这些输入，我们从 Transformer 分割模型 [14, 20] 中汲取灵感，并修改标准 Transformer 解码器。在应用解码器之前，我们首先将学习的输出标记嵌入插入到提示嵌入集中，该输出标记嵌入将在解码器的输出中使用，类似于[33]中的[class]标记。为了简单起见，我们将这些嵌入（不包括图像嵌入）统称为“tokens”。</p>
+<p><img src="173501429.png" alt="image-20241016173501429"></p>
+<p>图 14：轻量级mask decoder。两层解码器通过交叉注意力更新图像嵌入和提示标记。然后，图像嵌入被放大，更新的输出标记用于动态预测掩模。 （为了图形清晰，未示出：在每个注意层，位置编码被添加到图像嵌入中，并且整个原始prompt tokens（包括位置编码）被重新添加到标记查询和键中。）</p>
+<blockquote>
+<p><font color="YellowGreen">图中image embedding的大小为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>256</mn><mo>∗</mo><mn>64</mn><mo>∗</mo><mn>64</mn></mrow><annotation encoding="application/x-tex">256*64*64</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord">5</span><span class="mord">6</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">6</span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">6</span><span class="mord">4</span></span></span></span>,由于使用的模型是ViT16/H，意味着原始输入的图像大小为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1024</mn><mo>∗</mo><mn>1024</mn></mrow><annotation encoding="application/x-tex">1024*1024</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord">2</span><span class="mord">4</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">1</span><span class="mord">0</span><span class="mord">2</span><span class="mord">4</span></span></span></span>.有多少个prompt就有多少个pronmpt tokens，所以大小为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mrow><mi>t</mi><mi>o</mi><mi>k</mi><mi>e</mi><mi>n</mi><mi>s</mi></mrow></msub><mo>∗</mo><mn>256</mn></mrow><annotation encoding="application/x-tex">N_{tokens}*256</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.10903em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord">5</span><span class="mord">6</span></span></span></span>。</font></p>
+<ul>
+<li><font color="YellowGreen">self attention从最简单的角度来讲就是对于已有内容的一次整合。self attention前后维度的大小是不变的，这意味着self attention的含义是输入一些东西，用其他的信息去描述它，然后输出描述的结果。对于ViT而言，输入是一些图像patch，对于每一个patch在self attention之后的结果是包含他和其他所有patch的信息的和，但是对于不同patch的信息的权重有所不同，v对应每个patch所包含的信息，qk决定了权重。</font></li>
+<li><font color="YellowGreen">image to token attn与token to image  attn是image embedding与token做了两个方向的cross attention，用于交互信息。那为什么直接将image embedding与token一起做self attention呢，一种看法是因为self attention的复杂度为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo stretchy="false">(</mo><msup><mi>N</mi><mn>2</mn></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">0(N^2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mord">0</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>，会导致计算成本很大。这说明模型结构的设计有时候要考虑一些计算成本上的因素。尽管降低了计算成本，但由于不是做self attention，在image embedding与token做交叉注意力时可会污染彼此，相互加入一些本身没有的信息。再交互信息之后，更新全部内容对于token进行一次额外的cross attention，分别映射得到score和用于分割的representation。</font></li>
+<li><font color="YellowGreen">上述representation与上采样的image embeding进行点积得到mask。</font></li>
+<li><font color="YellowGreen">采用多个output token对应不同的场景(whole,part,subpart)，例如图四最右侧的剪刀。之所以这么做是因为如果不告诉prompt要在多的场景上去做分割，效果可能不会太好</font></li>
+</ul>
+</blockquote>
+<p>我们的解码器设计如图14所示。每个解码器层执行 4 个步骤：</p>
+<ol>
+<li>
+<p>对token进行self attention</p>
+</li>
+<li>
+<p>从token（作为query）到图像嵌入的交叉注意力。<font color="YellowGreen">token如果作为query，那么image embedding则作为kv，这意味着信息流的方向是从image embedding到token的，与原图中相反。所以这里方向性是指对于每一个token去查看image embedding的信息，即由token指向image embedding。</font></p>
+</li>
+<li>
+<p>逐点的的 MLP 更新每个token</p>
+</li>
+<li>
+<p>从图像嵌入（作为query）到token的交叉注意力<font color="YellowGreen">image embedding如果作为query，那么token则作为kv，这意味着信息流的方向是从token到image embedding的，与原图中相反。所以这里方向性是指对于每一个image embedding去查看token的信息，即由image embedding指向token。</font></p>
+</li>
+</ol>
+<p>最后一步使用prompt信息更新图像嵌入。在交叉注意力过程中，图像嵌入被视为一组 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><msup><mn>4</mn><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">64^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord">6</span><span class="mord"><span class="mord">4</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>个256维向量。每个自/交叉注意力和 MLP 在训练时都有一个残差连接、层归一化和 0.1 的 dropout。下一个解码器层从上一层获取更新的token和更新的图像嵌入。我们使用两层解码器。</p>
+<p>为了确保解码器能够访问关键的几何信息，只要参与注意力层，位置编码就会被添加到图像嵌入中。此外，每当它们参与注意力层时，整个原始prompt token（包括它们的位置编码）都会被重新添加到更新的token中。这是由于对prompt token的几何位置和类型的强依赖性。</p>
+<p>解后，我们使用两个转置卷积层对更新后的图像嵌入进行 4 倍上采样（现在相对于输入图像缩小了 4 倍）。然后，token再次与image embedding做交叉注意力，我们将更新后的输出token embedding传递给小型 3 层 MLP，该 MLP 输出与放大的image embedding的通道尺寸相匹配的向量。最后，我们用放大image embedding和 MLP 输出之间的空间逐点乘积来预测mask。</p>
+<p>Transformer 使用的嵌入维度为 256。Transformer MLP 块的内部维度较大，为 2048，但 MLP 仅应用于相对较少（很少大于 20）的prompt标记。然而，在具有 64×64 图像嵌入的交叉注意力层中，为了提高计算效率，我们将查询、键和值的通道维度减少了 2 倍到 128。所有注意力层都使用 8 个头。用于升级输出image embedding的转置卷积为 2×2、步长 2，输出通道尺寸为 64 和 32，并具有 GELU 激活。它们通过层归一化分开。</p>
+<blockquote>
+<p>SAM的一些Limitation和未来工作</p>
+<p><strong>Image Encoder</strong>：</p>
+<ul>
+<li>使用ViT-H进行全局建模，可以充分提取整体特征，但是1.计算量过大2.会引入不相关的内容参与计算，产生虚构的局部信息关联，影响特征提取的效果。</li>
+</ul>
+<p>举例：图中有一辆车和一个太阳，要做车的目标检测。用Image Encoder做编码的话，必然会导致太阳的信息加入到了车中，太阳光的信息可能会导致车的纹理细节变得奇怪，同时我们认为光晕是不带信息的噪声，因为其渐变且变化很慢，这会导致原本清晰的车辆细节可能会被盖掉一部分。加法本身这种操作会盖掉重要信息。QKV的本质就是加权求和，所以会盖掉特征，影响效果。<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi><msup><mi>K</mi><mi>T</mi></msup></mrow><annotation encoding="application/x-tex">QK^T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.035771em;vertical-align:-0.19444em;"></span><span class="mord mathnormal">Q</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413309999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span></span></span></span>会接一个softmax层，会导致本来不相关的信息联系到了一起。这是由于Image Encoder本身的架构所导致的</p>
+<ul>
+<li>特征尺度不变，无法产生层级化的语义信息</li>
+</ul>
+<p>特征尺度始终是N*d</p>
+<p><strong>Mask Decoder</strong>：</p>
+<ul>
+<li>使用多个output来模拟不同场景，但是不同场景(whole,part,subpart)的定义没有直接给出，没有体现在output token中，需要模型自行学习，对于收敛速度和实际效果没有保障。</li>
+</ul>
+<p>虽然对于meta来说有那个算力，但对于个人或者机构而言则不行</p>
+<ul>
+<li>没有充分利用输入prompt和image embedding的对应位置关系，盲目进行双向的信息交互</li>
+</ul>
+<p>即token to image attn中将image信息一股脑的丢给了token，没有考虑对应关系</p>
+<ul>
+<li>…</li>
+</ul>
+<p>要把SAM当成一个标注工具，而不要当作单纯的模型来看。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">HUI</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/10/15/paper/SAM_introduce/">http://example.com/2024/10/15/paper/SAM_introduce/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">HUI</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/204405684.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/10/12/paper/U-Net/" title="U-Net精读"><img class="cover" src="/img/pob5vjumok.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">U-Net精读</div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><span id="switch-btn"></span><span class="second-comment">Disqus</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="disqus_thread"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/87788970_p0_master1200.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">HUI</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/kalabiqlx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:kalabiqlx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%AD%E4%B9%89%E5%88%86%E5%89%B2"><span class="toc-text"> 语义分割</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E4%B9%89%E5%88%86%E5%89%B2%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text"> 语义分割数据集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E4%B9%89%E5%88%86%E5%89%B2%E6%A8%A1%E5%9E%8B"><span class="toc-text"> 语义分割模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%A4%E4%BA%92%E5%BC%8F%E5%88%86%E5%89%B2"><span class="toc-text"> 交互式分割</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#sam"><span class="toc-text"> SAM</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%91%98%E8%A6%81"><span class="toc-text"> 摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E5%BC%95%E8%A8%80"><span class="toc-text"> 1.引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E5%88%86%E5%89%B2%E4%BB%BB%E5%8A%A1"><span class="toc-text"> 2.分割任务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84"><span class="toc-text"> 3.模型架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E6%95%B0%E6%8D%AE%E5%BC%95%E6%93%8E"><span class="toc-text"> 4.数据引擎</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text"> 5.数据集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8%E8%AE%A8%E8%AE%BA"><span class="toc-text"> 8.讨论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-text"> 附录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#a%E6%A8%A1%E5%9E%8B%E4%B8%8E%E4%BB%BB%E5%8A%A1%E7%BB%86%E8%8A%82"><span class="toc-text"> A.模型与任务细节</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/10/15/paper/SAM_introduce/" title="语义分割与SAM精读"><img src="/img/204405684.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="语义分割与SAM精读"/></a><div class="content"><a class="title" href="/2024/10/15/paper/SAM_introduce/" title="语义分割与SAM精读">语义分割与SAM精读</a><time datetime="2024-10-15T03:51:38.000Z" title="发表于 2024-10-15 11:51:38">2024-10-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/12/paper/U-Net/" title="U-Net精读"><img src="/img/pob5vjumok.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="U-Net精读"/></a><div class="content"><a class="title" href="/2024/10/12/paper/U-Net/" title="U-Net精读">U-Net精读</a><time datetime="2024-10-12T06:05:38.000Z" title="发表于 2024-10-12 14:05:38">2024-10-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/10/exercitation/bagu_CV(1)/" title="八股文-计算机视觉(一)">八股文-计算机视觉(一)</a><time datetime="2024-10-10T12:55:33.000Z" title="发表于 2024-10-10 20:55:33">2024-10-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/10/exercitation/bagu_DeepLearning(1)/" title="八股文-深度学习(一)">八股文-深度学习(一)</a><time datetime="2024-10-10T12:55:33.000Z" title="发表于 2024-10-10 20:55:33">2024-10-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/10/10/exercitation/bagu_LLM(1)/" title="八股文-大模型(一)">八股文-大模型(一)</a><time datetime="2024-10-10T12:55:33.000Z" title="发表于 2024-10-10 20:55:33">2024-10-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/204405684.png')"><div id="footer-wrap"><div class="copyright">&copy;2024 By HUI</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script><script>(() => {
+  const disqus_config = function () {
+    this.page.url = 'http://example.com/2024/10/15/paper/SAM_introduce/'
+    this.page.identifier = '/2024/10/15/paper/SAM_introduce/'
+    this.page.title = '语义分割与SAM精读'
+  }
+
+  const disqusReset = () => {
+    window.DISQUS && window.DISQUS.reset({
+      reload: true,
+      config: disqus_config
+    })
+  }
+
+  btf.addGlobalFn('themeChange', disqusReset, 'disqus')
+
+  const loadDisqus = () =>{
+    if (window.DISQUS) disqusReset()
+    else {
+      const script = document.createElement('script')
+      script.src = 'https://.disqus.com/embed.js'
+      script.setAttribute('data-timestamp', +new Date())
+      document.head.appendChild(script)
+    }
+  }
+
+  const getCount = async() => {
+    try {
+      const eleGroup = document.querySelector('#post-meta .disqus-comment-count')
+      if (!eleGroup) return
+      const cleanedLinks = eleGroup.href.replace(/#post-comment$/, '')
+
+      const res = await fetch(`https://disqus.com/api/3.0/threads/set.json?forum=&api_key=&thread:link=${cleanedLinks}`,{
+        method: 'GET'
+      })
+      const result = await res.json()
+
+      const count = result.response.length ? result.response[0].posts : 0
+      eleGroup.textContent = count
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  if ('Valine' === 'Disqus' || !false) {
+    if (false) btf.loadComment(document.getElementById('disqus_thread'), loadDisqus)
+    else {
+      loadDisqus()
+      GLOBAL_CONFIG_SITE.isPost && getCount()
+    }
+  } else {
+    window.loadOtherComment = loadDisqus
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>
