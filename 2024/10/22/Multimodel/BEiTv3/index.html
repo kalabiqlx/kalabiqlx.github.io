@@ -1,0 +1,320 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>多模态系列(六)- BEiTv3 | HUI</title><meta name="author" content="HUI"><meta name="copyright" content="HUI"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="论文地址：Image as a Foreign Language: BEIT Pretraining for All Vision and Vision-Language Tasks 论文代码：BEiT-3 转载自：多模态系列论文–BEiT-3 详细解析_beitv3 github-CSDN博客  多模态系列(六)- BEiTv3  摘要 BEiTv3的目标非常明确，就是想做一个更大一统的框架，不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多模态系列(六)- BEiTv3">
+<meta property="og:url" content="http://example.com/2024/10/22/Multimodel/BEiTv3/index.html">
+<meta property="og:site_name" content="HUI">
+<meta property="og:description" content="论文地址：Image as a Foreign Language: BEIT Pretraining for All Vision and Vision-Language Tasks 论文代码：BEiT-3 转载自：多模态系列论文–BEiT-3 详细解析_beitv3 github-CSDN博客  多模态系列(六)- BEiTv3  摘要 BEiTv3的目标非常明确，就是想做一个更大一统的框架，不">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/image-20241022190456136.png">
+<meta property="article:published_time" content="2024-10-22T07:48:38.000Z">
+<meta property="article:modified_time" content="2024-10-25T14:04:22.278Z">
+<meta property="article:author" content="HUI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/image-20241022190456136.png"><link rel="shortcut icon" href="/img/122061154_p0_master1200.jpg"><link rel="canonical" href="http://example.com/2024/10/22/Multimodel/BEiTv3/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '多模态系列(六)- BEiTv3',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-25 22:04:22'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/bronya.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/87788970_p0_master1200.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">52</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">17</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/image-20241022190456136.png')"><nav id="nav"><span id="blog-info"><a href="/" title="HUI"><img class="site-icon" src="/img/319E33068A7ED73BAE7EB48FCE321DD4.jpg"/><span class="site-name">HUI</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">多模态系列(六)- BEiTv3</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-10-22T07:48:38.000Z" title="发表于 2024-10-22 15:48:38">2024-10-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-10-25T14:04:22.278Z" title="更新于 2024-10-25 22:04:22">2024-10-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%A4%9A%E6%A8%A1%E6%80%81%E7%B3%BB%E5%88%97/">多模态系列</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="多模态系列(六)- BEiTv3"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2024/10/22/Multimodel/BEiTv3/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/2024/10/22/Multimodel/BEiTv3/" itemprop="commentCount"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>论文地址：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2208.10442">Image as a Foreign Language: BEIT Pretraining for All Vision and Vision-Language Tasks</a></p>
+<p>论文代码：<a target="_blank" rel="noopener" href="https://github.com/microsoft/unilm/tree/master/beit3">BEiT-3</a></p>
+<p>转载自：<a target="_blank" rel="noopener" href="https://blog.csdn.net/lansebingxuan/article/details/131609713">多模态系列论文–BEiT-3 详细解析_beitv3 github-CSDN博客</a></p>
+<h1 id="多模态系列六-beitv3"><a class="markdownIt-Anchor" href="#多模态系列六-beitv3"></a> 多模态系列(六)- BEiTv3</h1>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<p>BEiTv3的目标非常明确，就是想做一个更大一统的框架，不论是从模型上统一，而且从训练的目标函数上要统一，还有模型大小，数据集大小，如何scale也要统一，作者称之为Big Convergence。BEiTv3就是把图像也看成了是一种语言（这就是他们题目的意思叫做Image as a Foreign Language），文章把Image叫做Imagelish，文本叫做English，然后把图像文本对叫做Parallel Sentence。因为不论是图像还是文本都可以用Mask Modeling去做,所以就不需要ITC，ITM ，Language Modeling或者Word Patch Alignment等各种Loss，只用一个Loss----- Mask Modeling。模型层面用的是他们之前VLMO提出的MOME，也就是文中的<strong>Multi-Way Transformers</strong></p>
+<h2 id="1-引言"><a class="markdownIt-Anchor" href="#1-引言"></a> 1. 引言</h2>
+<p>最近不论是在Language、Vision还是在多模态领域，Big Convergence是大势所趋，也就是在超大的数据集上做大规模的预训练，一旦模型训练好之后，它的特征就已经非常好了，可以直接Transfer到下游任务上去，尤其是当模型足够大、数据足够多的时候，有可能预训练出来一个有通用性能的<strong>Foundation Model</strong>，这个<strong>Foundation Model</strong>能解决各种的模态或者各种下游任务，非常的强大。<br>
+本文将大一统继续向前推进，彻底将多模态尤其是Vision Language预训练得很好，主要是从以下的三个方面实现大一统：</p>
+<p><strong>1. 模型</strong>：<br>
+从模型角度来说，Transformer非常关键：<br>
+1）<strong>Transformer框架相比CNN的优势</strong>：未来肯定是多模态的，一个模型做所有的Modality，所有的Task，肯定是一个大一统的框架，CNN不太适合做其他的Modality，而Transformer就适合做很多的Modality。从这一点上对比Transformer就胜出了。<br>
+2）<strong>多模态学习常用框架</strong>：Transformer刚开始是NLP用的，然后逐渐用到Vision和多模态领域，现在对于Vision Language Modeling多模态学习来说，有几个常用的方式：</p>
+<ul>
+<li>Clip的<strong>Dual Encoder</strong>框架：该框架非常适合做快速的Retrieval。</li>
+<li>Encoder、Decoder框架：该框架适合做Generation Task，比如BLIP、Coca。</li>
+<li>Fusion Encoder框架：只用Encoder，但是它有多模态融合部分，ALBEF、VLMO都属于这一类，能做Image Text Encoding。</li>
+</ul>
+<p>不论是哪种方式，这些模型在遇到下游任务的时候，因为输入的形式可能会改变或者输出的形式有时候会改变，所以模型需要根据下游任务去做一些改进，不是训练好一个模型就能拿去用，而是在遇到各种各样任务之后还需要进行修改，因此不是真正意义上的General Purpose Modeling。BEITV3用1个统一的Masked Data Modeling模型，每一个训练好的Transformer Block，SA层，或者Feed Forward Network都可以随意的拼装和组合。</p>
+<p><strong>2.预训练的目标函数</strong><br>
+因为掩码学习已经能够很好的学习图像文本或者多模态的特征，因此本文验证只用这一个目标函数训练模型。这种方式的优点如下：</p>
+<ul>
+<li>当数据和模型变大的时候，用更多的目标函数训练速度肯定会变慢。</li>
+<li>多个loss的权重调整比较难，有的Loss之间可能互补，有的Loss之间可能互斥，增加了很多的复杂度。而单个loss训练就比较简单。</li>
+</ul>
+<p>因此，本文使用了一个Pretraining Task，就是<strong>Mask Then Predict</strong>，因为图像经过Vision Transformer Embedding层以后，就变成了一个Sequence of Token，因此可以将图像看成一个Foreign Language叫Imaglish，这样就能将文本和图像用同样的方式去处理，本质上就没有任何区别。多模态的图像文本对就可以把它看成是一个Parallel <strong>Sentence</strong>，就是句子1后面跟了个句子2，那就没有什么不同了，一切都变成NLP（当然这也从侧面说明Mask Data Modeling目标函数非常的强）。</p>
+<p><strong>3.扩大模型和数据集的规模</strong><br>
+作者将模型大小扩展到Billions of Parameters，数据集也扩展的非常大，不过用的都是开源数据集，便于学术界去复现。</p>
+<h2 id="2-beitv3预训练框架"><a class="markdownIt-Anchor" href="#2-beitv3预训练框架"></a> 2. BEITv3预训练框架</h2>
+<p><img src="image-20241022190456136.png" alt></p>
+<p>模型用了Multi-Way Transformer，前面的自注意力全都是Share weights（Shared Multi-Head Self-Attention），只有后面Feed Forward Network不一样，根据不同的Modality训练不同的Vision、Language、Vision Language三个不同的Expert，然后通过调整不同的Input Modality去选择模型分支。Mask Data Modeling目标函数可能遮住了图像，可能是遮住了文本，模型训练学习去恢复它就可以。</p>
+<h2 id="3下游任务实现框架"><a class="markdownIt-Anchor" href="#3下游任务实现框架"></a> 3.下游任务实现框架</h2>
+<p><img src="image-20241022190628584.png" alt></p>
+<p>做下游任务时候：</p>
+<ul>
+<li>如图3（a），如果用Vision Encoder，就可以做所有图像任务，包括Classification, Detection和Segmentation。</li>
+<li>如图3（b），如果用Language Encoder，就可以去做Language的各种任务。</li>
+<li>如图3（c），如果用Vision Language Fusion Encoder，就可以做多模态的各种任务Vision Language Understanding Task。</li>
+<li>如图3（d），如果用 Dual Encoder，把这两个Vision和Language分开，变成双塔结构，就可以像CLIP一样做比较高效的Image Text Retrieval，如果Funtune，可以再用ITC去Funtune。</li>
+<li>如图3（e），如果用Image-to-Text Generation，就可以做生成Captioning任务，给定一句话，将下一个文本Mask掉，然后你Image Grounded的Text Encoder去预测被Mask掉的单词，就可以去做Image Captioning。</li>
+</ul>
+<h2 id="4-实验效果"><a class="markdownIt-Anchor" href="#4-实验效果"></a> 4. 实验效果</h2>
+<p><img src="image-20241022160309367.png" alt></p>
+<p>BEITv3采取了CoCa的多边形图的形式去展现它的强大，这个图里面紫色的这条线就是BEITv3，完全超过之前所有的方法，而且在每个任务上的提升都不小，最重要的是BEITv3这种灵活的结构，就是一个模型，<font color="red">但是它在推理的时候可以拆成各种各样的部分去做下游任务，包括单模态Unimodel的图像问题，比如Segmentation、Classification、Detection，以及各种各样的多模态的任务，</font>Language的任务它也是可以做的，只不过这里没有做对比。<br>
+<img src="image-20241022160348617.png" alt></p>
+<p>表1具体展示了BEITv3在各任务上的表现，每个任务之前的State of Art是哪些方法，BEITv3具体提升了多少。</p>
+<ul>
+<li><strong>单模态任务</strong>：比如在实例分割数据集ADE20K上，BEITv3就达到62.8，到现在为止应该还都是第一第二，在Coco是63.7，在ImageNet上达到89.6，这个性能是没有用额外的Private Data训练，但是CoCa它用了GFT 3 billion这个Google自有的数据集，所以其他人无法复现。</li>
+<li><strong>多模态任务</strong>：Visual Reasoning的NLVR2这个数据集，BEITv3比CoCa高了5.6个点，别的几个多模态任务，BEITv3表现也都非常好。</li>
+</ul>
+<p>虽然BEITv3就是一个模型结构，只用了一个目标函数，而且它的预训练数据集也没有用很多，全都是Public Dataset，但效果非常好，而且模型可以复现。<strong>这个从侧面说明了两个问题</strong>：</p>
+<ul>
+<li>不是目标函数越多越好，不是加更多的Regularization，模型就一定会训练的更好，还是得看Loss之间有没有互相弥补的特性。</li>
+<li>当模型变大、数据变大的时候，其他的Loss函数可能就没必要了。比如说Clip只用了对比学习就训练的很好，BEITv3只用Mask Modeling也训练的很好。</li>
+</ul>
+<p>数据也不一定是越多越好，CoCa用了十倍于训练Clip的数据量，几十倍于BEITv3用的数据量，但是BEITv3的性能还反超了CoCa，所以更多时候，数据的质量更关键。</p>
+<h2 id="5-总结"><a class="markdownIt-Anchor" href="#5-总结"></a> 5. 总结</h2>
+<p>BEITv3其实从方法上来说就是之前BEIT、BEITv2、VLBEIT、VLMO等一系列的工作的一个<strong>集合体</strong>，本身没有提出新的内容，主要就是把它做大做强，展示了一个Unified Framework能达到的性能。</p>
+<p>总之，BEiTv3用一个非常简单而且非常容易扩展的框架，一个目标函数，Mask Modeling，但是效果非常好。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">HUI</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/10/22/Multimodel/BEiTv3/">http://example.com/2024/10/22/Multimodel/BEiTv3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">HUI</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/image-20241022190456136.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/10/22/Multimodel/multimodel_summerize/" title="多模态系列(七)- 总结"><div class="cover" style="background: /img/"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">多模态系列(七)- 总结</div></div></a></div><div class="next-post pull-right"><a href="/2024/10/22/Multimodel/COCA/" title="多模态系列(五)- COCA"><img class="cover" src="/img/image-20241022153206496.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">多模态系列(五)- COCA</div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><span id="switch-btn"></span><span class="second-comment">Disqus</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="disqus_thread"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/87788970_p0_master1200.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">HUI</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">52</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">17</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/kalabiqlx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:kalabiqlx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%9A%E6%A8%A1%E6%80%81%E7%B3%BB%E5%88%97%E5%85%AD-beitv3"><span class="toc-text"> 多模态系列(六)- BEiTv3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%91%98%E8%A6%81"><span class="toc-text"> 摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%BC%95%E8%A8%80"><span class="toc-text"> 1. 引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-beitv3%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A1%86%E6%9E%B6"><span class="toc-text"> 2. BEITv3预训练框架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E4%B8%8B%E6%B8%B8%E4%BB%BB%E5%8A%A1%E5%AE%9E%E7%8E%B0%E6%A1%86%E6%9E%B6"><span class="toc-text"> 3.下游任务实现框架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%AE%9E%E9%AA%8C%E6%95%88%E6%9E%9C"><span class="toc-text"> 4. 实验效果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%80%BB%E7%BB%93"><span class="toc-text"> 5. 总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/10/23/LLM/RLHF/" title="大模型系列(二)- RLHF:基于人类反馈的强化学习"><img src="/img/image-20241023152702443.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大模型系列(二)- RLHF:基于人类反馈的强化学习"/></a><div class="content"><a class="title" href="/2024/10/23/LLM/RLHF/" title="大模型系列(二)- RLHF:基于人类反馈的强化学习">大模型系列(二)- RLHF:基于人类反馈的强化学习</a><time datetime="2024-10-23T05:31:38.000Z" title="发表于 2024-10-23 13:31:38">2024-10-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/22/Multimodel/multimodel_summerize/" title="多模态系列(七)- 总结"><div style="background: /img/"></div></a><div class="content"><a class="title" href="/2024/10/22/Multimodel/multimodel_summerize/" title="多模态系列(七)- 总结">多模态系列(七)- 总结</a><time datetime="2024-10-22T07:48:38.000Z" title="发表于 2024-10-22 15:48:38">2024-10-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/22/Multimodel/BEiTv3/" title="多模态系列(六)- BEiTv3"><img src="/img/image-20241022190456136.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="多模态系列(六)- BEiTv3"/></a><div class="content"><a class="title" href="/2024/10/22/Multimodel/BEiTv3/" title="多模态系列(六)- BEiTv3">多模态系列(六)- BEiTv3</a><time datetime="2024-10-22T07:48:38.000Z" title="发表于 2024-10-22 15:48:38">2024-10-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/22/Multimodel/COCA/" title="多模态系列(五)- COCA"><img src="/img/image-20241022153206496.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="多模态系列(五)- COCA"/></a><div class="content"><a class="title" href="/2024/10/22/Multimodel/COCA/" title="多模态系列(五)- COCA">多模态系列(五)- COCA</a><time datetime="2024-10-22T06:51:38.000Z" title="发表于 2024-10-22 14:51:38">2024-10-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/22/LLM/Lora/" title="大模型系列(一)- LoRA"><img src="/img/image-20241024195508119.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="大模型系列(一)- LoRA"/></a><div class="content"><a class="title" href="/2024/10/22/LLM/Lora/" title="大模型系列(一)- LoRA">大模型系列(一)- LoRA</a><time datetime="2024-10-22T05:03:38.000Z" title="发表于 2024-10-22 13:03:38">2024-10-22</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/image-20241022190456136.png')"><div id="footer-wrap"><div class="copyright">&copy;2024 By HUI</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script><script>(() => {
+  const disqus_config = function () {
+    this.page.url = 'http://example.com/2024/10/22/Multimodel/BEiTv3/'
+    this.page.identifier = '/2024/10/22/Multimodel/BEiTv3/'
+    this.page.title = '多模态系列(六)- BEiTv3'
+  }
+
+  const disqusReset = () => {
+    window.DISQUS && window.DISQUS.reset({
+      reload: true,
+      config: disqus_config
+    })
+  }
+
+  btf.addGlobalFn('themeChange', disqusReset, 'disqus')
+
+  const loadDisqus = () =>{
+    if (window.DISQUS) disqusReset()
+    else {
+      const script = document.createElement('script')
+      script.src = 'https://.disqus.com/embed.js'
+      script.setAttribute('data-timestamp', +new Date())
+      document.head.appendChild(script)
+    }
+  }
+
+  const getCount = async() => {
+    try {
+      const eleGroup = document.querySelector('#post-meta .disqus-comment-count')
+      if (!eleGroup) return
+      const cleanedLinks = eleGroup.href.replace(/#post-comment$/, '')
+
+      const res = await fetch(`https://disqus.com/api/3.0/threads/set.json?forum=&api_key=&thread:link=${cleanedLinks}`,{
+        method: 'GET'
+      })
+      const result = await res.json()
+
+      const count = result.response.length ? result.response[0].posts : 0
+      eleGroup.textContent = count
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  if ('Valine' === 'Disqus' || !false) {
+    if (false) btf.loadComment(document.getElementById('disqus_thread'), loadDisqus)
+    else {
+      loadDisqus()
+      GLOBAL_CONFIG_SITE.isPost && getCount()
+    }
+  } else {
+    window.loadOtherComment = loadDisqus
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>
