@@ -1,0 +1,335 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>MICCAI2024(2)-BIRD | HUI</title><meta name="author" content="HUI"><meta name="copyright" content="HUI"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="论文地址：https:&#x2F;&#x2F;papers.miccai.org&#x2F;miccai-2024&#x2F;paper&#x2F;1279_paper.pdf 代码地址：https:&#x2F;&#x2F;github.com&#x2F;ShawnHuang497&#x2F;BiRD  BiRD  摘要与引言 生物医学领域的语言和文本不同于自然语言与自然文本，导致常规的视觉助手在生物医学领域表现不佳。这些助手要么无法回答生物医学问题，要么更糟糕的是，提供不准确的回答或">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MICCAI2024(2)-BIRD">
+<meta property="og:url" content="http://example.com/2024/12/10/Multimodel/BiRD/index.html">
+<meta property="og:site_name" content="HUI">
+<meta property="og:description" content="论文地址：https:&#x2F;&#x2F;papers.miccai.org&#x2F;miccai-2024&#x2F;paper&#x2F;1279_paper.pdf 代码地址：https:&#x2F;&#x2F;github.com&#x2F;ShawnHuang497&#x2F;BiRD  BiRD  摘要与引言 生物医学领域的语言和文本不同于自然语言与自然文本，导致常规的视觉助手在生物医学领域表现不佳。这些助手要么无法回答生物医学问题，要么更糟糕的是，提供不准确的回答或">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/image-20241104164541942.png">
+<meta property="article:published_time" content="2024-12-10T12:36:38.000Z">
+<meta property="article:modified_time" content="2024-12-10T12:36:59.839Z">
+<meta property="article:author" content="HUI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/image-20241104164541942.png"><link rel="shortcut icon" href="/img/122061154_p0_master1200.jpg"><link rel="canonical" href="http://example.com/2024/12/10/Multimodel/BiRD/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MICCAI2024(2)-BIRD',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-12-10 20:36:59'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/bronya.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/87788970_p0_master1200.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">58</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/image-20241104164541942.png')"><nav id="nav"><span id="blog-info"><a href="/" title="HUI"><img class="site-icon" src="/img/319E33068A7ED73BAE7EB48FCE321DD4.jpg"/><span class="site-name">HUI</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">MICCAI2024(2)-BIRD</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-12-10T12:36:38.000Z" title="发表于 2024-12-10 20:36:38">2024-12-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-10T12:36:59.839Z" title="更新于 2024-12-10 20:36:59">2024-12-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%8C%BB%E5%AD%A6%E5%A4%9A%E6%A8%A1%E6%80%81/">医学多模态</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="MICCAI2024(2)-BIRD"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2024/12/10/Multimodel/BiRD/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/2024/12/10/Multimodel/BiRD/" itemprop="commentCount"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>论文地址：<a target="_blank" rel="noopener" href="https://papers.miccai.org/miccai-2024/paper/1279_paper.pdf">https://papers.miccai.org/miccai-2024/paper/1279_paper.pdf</a></p>
+<p>代码地址：<a target="_blank" rel="noopener" href="https://github.com/ShawnHuang497/BiRD">https://github.com/ShawnHuang497/BiRD</a></p>
+<h1 id="bird"><a class="markdownIt-Anchor" href="#bird"></a> BiRD</h1>
+<h2 id="摘要与引言"><a class="markdownIt-Anchor" href="#摘要与引言"></a> 摘要与引言</h2>
+<p>生物医学领域的语言和文本不同于自然语言与自然文本，导致常规的视觉助手在生物医学领域表现不佳。这些助手要么无法回答生物医学问题，要么更糟糕的是，提供不准确的回答或完全虚构的信息。</p>
+<p>目前生物医学领域的MMLM研究主要集中于图像描述和VQA，在“refer”和“ground”能力方面仍存在显著的缺失，如图1所示：</p>
+<ul>
+<li>“refer”要求模型能够准确地理解特定区域的语义内容</li>
+<li>“ground”则需要模型根据提供的语义描述对区域进行定位</li>
+</ul>
+<p><img src="image-20241104161146541.png" alt></p>
+<center>图 1：BiRD 为生物医学中的多模式大语言模型提供了复杂的refer和ground功能</center>
+<p>这些细粒度的多模态能力对于智能生物医学助手与患者之间的交互过程和生物医学教育至关重要。这项能力不仅使信息交换过程更加直观，还显著提高了信息交换的准确性和效率。在生物医学领域缺乏<strong>多模态细粒度交互数据集</strong>是阻碍这一能力发展的主要因素。</p>
+<p>基于此，本文的主要贡献如下：</p>
+<ul>
+<li><strong>Med-GRIT-270k数据集</strong>：第一个生物医学领域的“refer and ground”指令调优数据集。包含27万对问答，涵盖八种不同的医学成像模式。基于医学分割数据集（SA-Med2D-20M）构建。通过ChatGPT对大规模的生物医学图像-掩码对进行转换，生成了多模态对话数据集。</li>
+<li><strong>首个生物医学“refer和ground”多模态大语言模型BiRD</strong>：利用Med-GRIT-270k数据集和多任务指令学习微调，通过该模型验证了多任务指令调优的有效性，并为将MLLMs应用于生物医学专业领域提供了最佳实践。</li>
+<li><strong>推动生物医学多模态学习研究的发展</strong></li>
+</ul>
+<h2 id="相关工作"><a class="markdownIt-Anchor" href="#相关工作"></a> 相关工作</h2>
+<p><strong>生物医学多模态大语言模型</strong>：生物医学领域中的一些代表性工作包括BioMedGPT、RadFM、LLaVa-Med等</p>
+<ul>
+<li><strong>LLaVa-Med</strong>：利用预训练LLM进行视觉指令微调，开发了一种能够处理图像输入的端到端多模态生物医学聊天机器人。</li>
+<li><strong>RadFM</strong>：一个支持2D/3D放射影像输入的多模态大语言模型</li>
+</ul>
+<p>由于于各种挑战，能够支持细粒度交互的生物医学MLLM尚未出现</p>
+<p><strong>用于refer和groud的多模态大语言模型</strong>：尽管一些研究已经开始在生物医学领域探索定位问题，但这些方法只能应用于小规模模型，因为数据量有限且成像模式较少。这些项目成功的关键在于其对相关大规模数据集的可访问性。在生物医学领域中，几乎不存在多模态细粒度交互数据集。</p>
+<p><img src="image-20241104161416778.png" alt></p>
+<center>图 2：我们生成的instruction-following data实例。上半部分：元信息是根据医学分割数据集中的规则创建的，图像标题是从 chatGPT 生成的。底部：chatGPT 生成的the instruction following data。</center>
+<h2 id="med-grit-270k数据集"><a class="markdownIt-Anchor" href="#med-grit-270k数据集"></a> Med-GRIT-270k数据集</h2>
+<p>该数据集通过人工与人工智能的协作从大规模生物医学图像分割数据集中生成。生成过程分为三个步骤：</p>
+<ul>
+<li>基于每张图像的掩码手动生成实例级的元信息；</li>
+<li>利用AI助手生成图像的全局信息；</li>
+<li>基于前两步获得的元信息和全局图像信息，利用AI助手生成细粒度的对话内容。</li>
+</ul>
+<p><strong>生成实例级元信息</strong> 首先从SA-Med2D-20M数据集中抽样生物医学图像和掩码对，最终从该数据集中抽取了大约6万张图像，考虑了成像模式的多样性和冗余性。例如，原始数据集中包含了大量的3D数据切片，导致数据的高度相似。随后，我们根据实例级的掩码计算了每个实例的坐标。具体来说，空间位置通过文本格式[<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mrow><mi>t</mi><mi>o</mi><mi>p</mi><mi>l</mi><mi>e</mi><mi>f</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">X_{topleft}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">p</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mrow><mi>t</mi><mi>o</mi><mi>p</mi><mi>l</mi><mi>e</mi><mi>f</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Y_{topleft}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">p</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mrow><mi>b</mi><mi>o</mi><mi>t</mi><mi>t</mi><mi>o</mi><mi>m</mi><mi>r</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">X_{bottomright}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">b</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">m</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight">h</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mrow><mi>b</mi><mi>o</mi><mi>t</mi><mi>t</mi><mi>o</mi><mi>m</mi><mi>r</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Y_{bottomright}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">b</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">m</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight">h</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>]表示，并将坐标标准化为[0,1]范围内。最后，我们为图像添加了额外细节信息，以编译元信息，包括成像模式、扫描区域、方向和对象坐标。</p>
+<p><strong>生成图像描述</strong> 我们利用精心设计的提示词结合提供的元信息，通过ChatGPT获得每张图像的全局信息。</p>
+<p><strong>生物医学指令微调数据</strong> 空间理解通过各种任务格式呈现，主要包括两种类型及其相应的任务名称：</p>
+<ul>
+<li>区域输入与文本输出：<strong>Referring Object Classification</strong>（ROC）、<strong>Referring Captioning</strong>（RC）</li>
+<li>文本输入与区域输出：<strong>Visual Grounding</strong>（VG）</li>
+<li>文本输入与文本输出：<strong>Medical Image Analysis</strong>（MIA）</li>
+</ul>
+<p>为减少歧义并增强模型的细粒度视觉理解能力，采用了一些重要策略。引入了特殊标记（<code>&lt;ref&gt;</code>和<code>&lt;/ref&gt;</code>）来标识边界框所指代的内容，将边界框与对应的描述词或句子关联。此外，我们指示ChatGPT为每个任务设计一个问答。</p>
+<p>最后，我们将坐标映射到[0, 1000]范围内，并重新格式化为(<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mrow><mi>t</mi><mi>o</mi><mi>p</mi><mi>l</mi><mi>e</mi><mi>f</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">X_{topleft}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">p</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mrow><mi>t</mi><mi>o</mi><mi>p</mi><mi>l</mi><mi>e</mi><mi>f</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Y_{topleft}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">p</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>)、(<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>X</mi><mrow><mi>b</mi><mi>o</mi><mi>t</mi><mi>t</mi><mi>o</mi><mi>m</mi><mi>r</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">X_{bottomright}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07847em;">X</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.07847em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">b</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">m</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight">h</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Y</mi><mrow><mi>b</mi><mi>o</mi><mi>t</mi><mi>t</mi><mi>o</mi><mi>m</mi><mi>r</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">Y_{bottomright}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.22222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">b</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">m</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight">h</span><span class="mord mathnormal mtight">t</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span>)。为了区分detection strings和regular text strings，分别在边界框字符串的开头和结尾添加了两个特殊标记（<code>&lt;box&gt;</code>和<code>&lt;/box&gt;</code>）。图2展示了我们生成的指令微调数据的一个示例。</p>
+<h2 id="多任务指令学习"><a class="markdownIt-Anchor" href="#多任务指令学习"></a> <strong>多任务指令学习</strong></h2>
+<p>我们的目标是通过多任务学习使多模态大语言模型（MLLM）具备<strong>refer</strong>和<strong>groud</strong>能力，同时确保模型保留其基本的对话能力。本节将从模型架构和多任务指令训练两个方面进行阐述。</p>
+<h3 id="模型架构"><a class="markdownIt-Anchor" href="#模型架构"></a> <strong>模型架构</strong></h3>
+<p>我们采用<strong>Qwen-VL</strong>作为基础的通用领域语言模型。具体来说，视觉编码器使用Vision Transformer（ViT）架构，并从OpenAI的<strong>CLIP ViT-BigG</strong>模型的预训练权重初始化。视觉-语言适配器使用带有可训练query的交叉注意力机制。大语言模型则采用了预训练的<strong>Qwen-7B</strong>模型。</p>
+<h3 id="多任务指令训练"><a class="markdownIt-Anchor" href="#多任务指令训练"></a> 多任务指令训练</h3>
+<p>考虑到基础模型已经具备在自然图像中进行“refer”或“ground”的能力，我们仅在one stage中用Med-GRIT-240k数据集对预训练的基础模型进行微调。</p>
+<p>如图3所示，我们仅微调<strong>交叉注意力</strong>和<strong>大语言模型</strong>的参数，而视觉编码器保持冻结状态。输入图像通过ViT-BigG和视觉-语言适配器进行处理，生成固定长度的视觉特征序列。我们在图像特征序列的开头和结尾分别添加标记（<code>&lt;img&gt;</code>和<code>&lt;/img&gt;</code>），用于表示视觉内容的起始和结束。我们使用包含6万张图像和总共24万对话轮次的数据集进行模型微调。全局训练批次大小为128，学习率为2e−5，采用余弦调度器。多任务指令训练在4个A100（40G）GPU上仅花费了30小时。</p>
+<p><img src="image-20241104164541942.png" alt></p>
+<center>图 3：概览。左：我们收集的 Med-GRIT-270k 中对话轮次的训练集（上）和测试集（下）分布。右图：基于 Qwen-VL 的BiRD的架构 。我们利用240k个数据开发了它，并在 30k个数据上对其进行了评估。</center>
+<h2 id="实验"><a class="markdownIt-Anchor" href="#实验"></a> 实验</h2>
+<p><strong>评估数据集</strong> 我们随机选取了构建的Med-GRIT-270k数据集中的约<strong>12%的图像和对话</strong>作为测试集。考虑到单个3D数据集中包含多个数据切片，我们完整提取了其中的样本，以避免测试集数据泄露到训练集中。这样可以确保同一3D数据集的不同切片不会同时出现在训练集和测试集中，从而保证测试结果的可靠性。</p>
+<p><strong>评估指标</strong> 四个任务的评估指标分别为：<strong>Recall@0.5</strong>、<strong>Recall</strong>、<strong>SPICE</strong>和mBMR。<strong>Recall</strong>@0.5表示预测的边界框与真实边界框的交并比（IoU）超过0.5时才视为正确。用于评估医学图像分析（MIA）任务的<strong>mBMR</strong>是<strong>BLEU@4</strong>、<strong>METEOR</strong>和<strong>ROUGE-L</strong>的平均值，比单一指标更能全面评估预测质量。</p>
+<p><strong>对比</strong> 如表2所示，我们是首个开发具备参考和定位能力的医学多模态大语言模型，而现有的多模态大语言模型（如Qwen-VL、GPT-4、MiniGPT-v2等）尚未用于医学refer和groud数据集。因此，我们不会在评估指标上与这些模型进行对比，以避免不公平。</p>
+<p><img src="image-20241104165640729.png" alt></p>
+<center>表 2：各种生物医学 MLLM 的功能。“模态”表示图像模态。</center>
+<p>如表1所示，我们展示了LLaVa-Med模型的定量测试结果以及数据规模对结果的影响。在第3至第6行中，我们观察了不同数据规模下BiRD-Med-GRIT模型的性能。随着训练数据的增加，所有指标均显著提升，平均值从35.69提高到56.66，这表明增加数据集规模有助于提升模型在多模态数据集上的表现。特别是当数据集达到240k时，模型在所有指标上均达到了最高分，表现出最佳的整体性能。</p>
+<p><img src="image-20241104165749704.png" alt></p>
+<center>表 1：与 LLaVa-Med的比较以及多模态数据集规模的研究。</center>
+<p>从表1的第1行和第6行可以看出，LLaVa-Med模型在Med-GRIT-Test30k数据集上的表现较差，特别是在区域级视觉内容定位方面无效（Recall@0.5为0）。同时，我们还在LLaVa-Med的qa-0.2k测试集上评估了我们的模型。表1的最后两行显示，由于我们未在LLaVa-Med数据集上进行训练，因此在其测试集上的指标略低于该模型自身。然而，在我们的测试集中进行的类似MIA任务中，LLaVa-Med的mBMR得分为11.20，明显低于我们模型在相同任务下的得分（52.17）。</p>
+<p><strong>主要结果</strong> 如表3所示，我们展示了BiRD模型在<strong>八种不同医学成像模式</strong>下四项任务的表现。ROC任务测试了MLLM对与特定图像区域相关的文本及其视觉细节的理解能力。PET和眼底图像仅关注一个类别，因此未在这些模式下进行训练或评估。我们发现ROC的召回率主要取决于对象和特征在图像模式中的多样性和显著性。RC任务测试模型识别图像区域并用语言描述的能力。模型在超声图像和皮肤镜图像上的表现较好，但在更具多样性的CT图像上表现较差。VG任务测试模型将文本描述与图像区域匹配的能力。MR模式的表现最差，可能是因为该模式主要包含肿瘤组织，解剖结构相对较少。这一问题在超声图像中也有所体现。MIA任务则测试了模型对医学图像的理解。表3的第4行显示，模型在几乎所有模式下都具有一定的分析和理解能力。</p>
+<p><img src="image-20241104170131044.png" alt></p>
+<center>表 3：BiRD 模型在 Med-GRIT-270k 测试数据集上跨各种任务和模式的性能。</center>
+<p>在四个评估任务中，皮肤镜成像模式的表现最为突出。这可以归因于其独特的视觉特征、较少的对象类别以及对象区域占据了图像的大部分，使该模式的任务相对简单。</p>
+<p><strong>对象幻觉</strong> 如图4所示，我们在BiRD模型中也观察到了object幻觉现象。这种现象较为常见，在其他多模态大语言模型中也有所体现。我们认为这是由于模型的<strong>视觉编码器被冻结，且其初始化参数几乎没有接触过医学影像</strong>，导致在特定领域或主题的特征提取上缺乏充分理解。因此，未来研究中应对此现象给予更多关注。</p>
+<p><img src="image-20241104170507704.png" alt></p>
+<center>图 4：BiRD 中物体幻觉的示例。</center>
+<h2 id="局限性"><a class="markdownIt-Anchor" href="#局限性"></a> 局限性</h2>
+<p>尽管本研究开发了一个新颖的生物医学多模态数据集，但在数据构建过程中，大多数原始数据集仅为样本注释了特定器官或疾病。这使得构建高度相关的负样本变得困难。该问题将成为后续数据构建工作中的重点。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">HUI</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/12/10/Multimodel/BiRD/">http://example.com/2024/12/10/Multimodel/BiRD/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">HUI</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/image-20241104164541942.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/12/10/Multimodel/MM-LLMs-survey/" title="MM-LLMs综述(腾讯)"><img class="cover" src="/img/image-20241114140927375.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">MM-LLMs综述(腾讯)</div></div></a></div><div class="next-post pull-right"><a href="/2024/12/10/Multimodel/LLaVA-V1.5/" title="LLaVA(2)-Improved Baselines with Visual Instruction Tuning"><img class="cover" src="/img/image-20241123214150206.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">LLaVA(2)-Improved Baselines with Visual Instruction Tuning</div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><span id="switch-btn"></span><span class="second-comment">Disqus</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="disqus_thread"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/87788970_p0_master1200.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">HUI</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">58</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/kalabiqlx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:kalabiqlx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#bird"><span class="toc-text"> BiRD</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%91%98%E8%A6%81%E4%B8%8E%E5%BC%95%E8%A8%80"><span class="toc-text"> 摘要与引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="toc-text"> 相关工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#med-grit-270k%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-text"> Med-GRIT-270k数据集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E4%BB%BB%E5%8A%A1%E6%8C%87%E4%BB%A4%E5%AD%A6%E4%B9%A0"><span class="toc-text"> 多任务指令学习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84"><span class="toc-text"> 模型架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E4%BB%BB%E5%8A%A1%E6%8C%87%E4%BB%A4%E8%AE%AD%E7%BB%83"><span class="toc-text"> 多任务指令训练</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C"><span class="toc-text"> 实验</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B1%80%E9%99%90%E6%80%A7"><span class="toc-text"> 局限性</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/12/10/Multimodel/MM-LLMs-survey/" title="MM-LLMs综述(腾讯)"><img src="/img/image-20241114140927375.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MM-LLMs综述(腾讯)"/></a><div class="content"><a class="title" href="/2024/12/10/Multimodel/MM-LLMs-survey/" title="MM-LLMs综述(腾讯)">MM-LLMs综述(腾讯)</a><time datetime="2024-12-10T12:40:00.000Z" title="发表于 2024-12-10 20:40:00">2024-12-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/12/10/Multimodel/BiRD/" title="MICCAI2024(2)-BIRD"><img src="/img/image-20241104164541942.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MICCAI2024(2)-BIRD"/></a><div class="content"><a class="title" href="/2024/12/10/Multimodel/BiRD/" title="MICCAI2024(2)-BIRD">MICCAI2024(2)-BIRD</a><time datetime="2024-12-10T12:36:38.000Z" title="发表于 2024-12-10 20:36:38">2024-12-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/12/10/Multimodel/LLaVA-V1.5/" title="LLaVA(2)-Improved Baselines with Visual Instruction Tuning"><img src="/img/image-20241123214150206.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLaVA(2)-Improved Baselines with Visual Instruction Tuning"/></a><div class="content"><a class="title" href="/2024/12/10/Multimodel/LLaVA-V1.5/" title="LLaVA(2)-Improved Baselines with Visual Instruction Tuning">LLaVA(2)-Improved Baselines with Visual Instruction Tuning</a><time datetime="2024-12-10T12:30:38.000Z" title="发表于 2024-12-10 20:30:38">2024-12-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/12/10/Multimodel/LLaVA/" title="LLaVA(1)-Visual Instruction Tuning"><img src="/img/image-20241122154508143.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLaVA(1)-Visual Instruction Tuning"/></a><div class="content"><a class="title" href="/2024/12/10/Multimodel/LLaVA/" title="LLaVA(1)-Visual Instruction Tuning">LLaVA(1)-Visual Instruction Tuning</a><time datetime="2024-12-10T12:25:38.000Z" title="发表于 2024-12-10 20:25:38">2024-12-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/12/10/Multimodel/PMC-CLIP/" title="MICCAI2024(1)-PMC-CLIP"><img src="/img/image-20241111141331709.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MICCAI2024(1)-PMC-CLIP"/></a><div class="content"><a class="title" href="/2024/12/10/Multimodel/PMC-CLIP/" title="MICCAI2024(1)-PMC-CLIP">MICCAI2024(1)-PMC-CLIP</a><time datetime="2024-12-10T12:12:38.000Z" title="发表于 2024-12-10 20:12:38">2024-12-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/image-20241104164541942.png')"><div id="footer-wrap"><div class="copyright">&copy;2024 By HUI</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script><script>(() => {
+  const disqus_config = function () {
+    this.page.url = 'http://example.com/2024/12/10/Multimodel/BiRD/'
+    this.page.identifier = '/2024/12/10/Multimodel/BiRD/'
+    this.page.title = 'MICCAI2024(2)-BIRD'
+  }
+
+  const disqusReset = () => {
+    window.DISQUS && window.DISQUS.reset({
+      reload: true,
+      config: disqus_config
+    })
+  }
+
+  btf.addGlobalFn('themeChange', disqusReset, 'disqus')
+
+  const loadDisqus = () =>{
+    if (window.DISQUS) disqusReset()
+    else {
+      const script = document.createElement('script')
+      script.src = 'https://.disqus.com/embed.js'
+      script.setAttribute('data-timestamp', +new Date())
+      document.head.appendChild(script)
+    }
+  }
+
+  const getCount = async() => {
+    try {
+      const eleGroup = document.querySelector('#post-meta .disqus-comment-count')
+      if (!eleGroup) return
+      const cleanedLinks = eleGroup.href.replace(/#post-comment$/, '')
+
+      const res = await fetch(`https://disqus.com/api/3.0/threads/set.json?forum=&api_key=&thread:link=${cleanedLinks}`,{
+        method: 'GET'
+      })
+      const result = await res.json()
+
+      const count = result.response.length ? result.response[0].posts : 0
+      eleGroup.textContent = count
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  if ('Valine' === 'Disqus' || !false) {
+    if (false) btf.loadComment(document.getElementById('disqus_thread'), loadDisqus)
+    else {
+      loadDisqus()
+      GLOBAL_CONFIG_SITE.isPost && getCount()
+    }
+  } else {
+    window.loadOtherComment = loadDisqus
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>

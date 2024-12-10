@@ -1,0 +1,550 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>LLaVA(2)-Improved Baselines with Visual Instruction Tuning | HUI</title><meta name="author" content="HUI"><meta name="copyright" content="HUI"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="论文地址：https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2310.03744 论文代码：https:&#x2F;&#x2F;github.com&#x2F;haotian-liu&#x2F;LLaVA  LLaVA-Improved Baselines with Visual Instruction Tuning(V1.5)  摘要 本文在LLaVA框架下，首次系统地研究了多模态模型的设计选择，研究是在受控条件下进行的。研究表明，LLaV">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLaVA(2)-Improved Baselines with Visual Instruction Tuning">
+<meta property="og:url" content="http://example.com/2024/12/10/Multimodel/LLaVA-V1.5/index.html">
+<meta property="og:site_name" content="HUI">
+<meta property="og:description" content="论文地址：https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2310.03744 论文代码：https:&#x2F;&#x2F;github.com&#x2F;haotian-liu&#x2F;LLaVA  LLaVA-Improved Baselines with Visual Instruction Tuning(V1.5)  摘要 本文在LLaVA框架下，首次系统地研究了多模态模型的设计选择，研究是在受控条件下进行的。研究表明，LLaV">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/image-20241123214150206.png">
+<meta property="article:published_time" content="2024-12-10T12:30:38.000Z">
+<meta property="article:modified_time" content="2024-12-10T12:34:47.352Z">
+<meta property="article:author" content="HUI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/image-20241123214150206.png"><link rel="shortcut icon" href="/img/122061154_p0_master1200.jpg"><link rel="canonical" href="http://example.com/2024/12/10/Multimodel/LLaVA-V1.5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'LLaVA(2)-Improved Baselines with Visual Instruction Tuning',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-12-10 20:34:47'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/bronya.css"><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (false) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/87788970_p0_master1200.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">58</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/image-20241123214150206.png')"><nav id="nav"><span id="blog-info"><a href="/" title="HUI"><img class="site-icon" src="/img/319E33068A7ED73BAE7EB48FCE321DD4.jpg"/><span class="site-name">HUI</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首頁</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 時間軸</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 標籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分類</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清單</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音樂</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 電影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友鏈</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 關於</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">LLaVA(2)-Improved Baselines with Visual Instruction Tuning</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-12-10T12:30:38.000Z" title="发表于 2024-12-10 20:30:38">2024-12-10</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-10T12:34:47.352Z" title="更新于 2024-12-10 20:34:47">2024-12-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%A4%9A%E6%A8%A1%E6%80%81%E7%B3%BB%E5%88%97/">多模态系列</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">10.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>31分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="LLaVA(2)-Improved Baselines with Visual Instruction Tuning"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2024/12/10/Multimodel/LLaVA-V1.5/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/2024/12/10/Multimodel/LLaVA-V1.5/" itemprop="commentCount"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>论文地址：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.03744">https://arxiv.org/abs/2310.03744</a></p>
+<p>论文代码：<a target="_blank" rel="noopener" href="https://github.com/haotian-liu/LLaVA">https://github.com/haotian-liu/LLaVA</a></p>
+<h1 id="llava-improved-baselines-with-visual-instruction-tuningv15"><a class="markdownIt-Anchor" href="#llava-improved-baselines-with-visual-instruction-tuningv15"></a> LLaVA-<strong>Improved Baselines with Visual Instruction Tuning</strong>(V1.5)</h1>
+<h2 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h2>
+<p>本文在LLaVA框架下，首次系统地研究了多模态模型的<strong>设计选择</strong>，研究是在受控条件下进行的。研究表明，LLaVA中的<strong>全连接视觉-语言连接器</strong>具有出色的性能和数据效率。在此基础上，通过以下简单改进建立了更强的基准模型：</p>
+<ol>
+<li>使用CLIP-ViT-L-336px作为视觉编码器，并配备MLP投影层；</li>
+<li>添加面向学术任务的VQA数据集，并优化响应格式提示。</li>
+</ol>
+<p>改进后的模型在11项基准测试中达到了最新的性能水平。最终的13B模型仅使用了120万公开数据，在单台8卡A100机器上约1天即可完成训练。此外，我们还在多模态模型的一些开放性问题上进行了初步探索，包括更高分辨率输入的扩展、组合能力以及模型幻觉等问题。</p>
+<h2 id="1-引言"><a class="markdownIt-Anchor" href="#1-引言"></a> 1. 引言</h2>
+<p>大规模多模态模型（LMMs）在研究领域中变得越来越流行，因为它们是通用型助手的关键构建模块。最近对LMM的研究逐渐集中在一种被称为<strong>视觉指导调整</strong>（Visual Instruction Tuning）的核心概念上。这些研究结果令人印象深刻，例如LLaVA和MiniGPT-4在自然指令跟随和视觉推理能力方面展示了出色的表现。为了更好地理解LMM的能力，研究者提出了多个基准测试。近年来的研究进一步通过<strong>扩大预训练数据</strong>、<strong>指令跟随数据</strong>、<strong>视觉编码器</strong>或<strong>语言模型</strong>等方式展示了性能的提升。</p>
+<p>LLaVA架构还被广泛应用于不同的下游任务和领域，包括<strong>区域级</strong>和<strong>像素级的理解</strong>、<strong>生物医学助手</strong>、<strong>图像生成以及对抗性</strong>研究。</p>
+<p><font color="red">尽管有许多基准测试和技术进步，目前仍不清楚如何设计最佳的训练方法来使LMM成为通用型助手</font>。例如：</p>
+<ul>
+<li>LLaVA在对话风格的视觉推理任务上表现优异，甚至优于后来的方法如InstructBLIP在此类基准测试上的表现；</li>
+<li>而InstructBLIP在需要单词或短句回答的传统VQA基准测试中表现更为出色。</li>
+</ul>
+<p>由于两种模型在架构和训练数据上的显著差异，其能力差距的根本原因尚不明确，尽管已有一些猜测，例如<strong>训练数据量的大小</strong>、<strong>Qformer</strong>等重采样器的使用等。</p>
+<p>为此，本文在受控条件下对LMM的设计选择进行了首次系统研究。研究基于LLaVA展开，从<strong>输入</strong>、<strong>模型</strong>和<strong>数据</strong>三个角度进行优化，构建了改进的多模态模型基准。</p>
+<p>首先，我们发现LLaVA中的<strong>全连接视觉-语言连接器</strong>具有出色的数据效率，并在此基础上建立了更强、更实用的基准模型。研究表明，两项简单的改进：</p>
+<ul>
+<li>⭐使用MLP跨模态连接器</li>
+<li>⭐引入学术任务相关的数据（如VQA数据）——对于LLaVA框架是独立的</li>
+</ul>
+<p>当与LLaVA结合使用时，可显著提升多模态理解能力。相比之下，InstructBLIP或Qwen-VL需要对数亿甚至数十亿的图文配对数据进行训练，而LLaVA使用了最简单的多模态架构设计，仅需在60万对图文配对数据上训练一个简单的全连接投影层即可。最终模型可在一台配备8张A100显卡的机器上约1天内完成训练，并在广泛的基准测试上取得了最新的性能。同时，与使用内部数据的Qwen-VL不同，LLaVA仅使用公开可用的数据。</p>
+<p>接下来，我们对大规模多模态模型的一些开放性问题进行了初步探索。研究发现：</p>
+<ul>
+<li>⭐<strong>高分辨率图像输入的扩展</strong>。我们表明LLaVA的架构可以通过<strong>简单地将图像划分为网格</strong>来适应更高的分辨率，保持数据效率的同时提高了模型的细节感知能力，并减少了幻觉现象；</li>
+<li>⭐<strong>组合能力</strong>。研究发现大规模多模态模型能够泛化至组合能力。例如，将长文本语言推理与短视觉推理结合的训练可以提高模型在多模态问题上的写作能力；</li>
+<li>⭐<strong>数据效率</strong>。研究表明，将LLaVA的训练数据混合随机下采样至75%并不会显著降低模型性能，表明通过更复杂的数据压缩策略可能进一步提升LLaVA高效的训练流程；</li>
+<li>⭐<strong>数据扩展</strong>。研究提供了关于数据粒度扩展与模型能力提升之间关系的实证证据，表明提高能力的同时需要避免引入如幻觉等副作用。</li>
+</ul>
+<p>总之，本文对大规模多模态模型的训练进行了系统研究，并提出了一种简单但有效的方法，用以在多任务学习和平衡扩展中优化大规模多模态模型的设计。改进后的基准模型LLaVA-1.5仅使用公开数据，在11项广泛的任务中达到了最新性能，并且在数据效率上显著优于现有方法。通过重新审视传统方法和探索视觉指导调整中的开放性问题，我们为打造更强大、更可靠的大规模多模态模型奠定了基础。我们希望这些改进和易于复现的基准能够为未来开源LMM的研究提供参考。</p>
+<h2 id="2-相关工作"><a class="markdownIt-Anchor" href="#2-相关工作"></a> 2. 相关工作</h2>
+<h3 id="21-指令跟随的大规模多模态模型lmms"><a class="markdownIt-Anchor" href="#21-指令跟随的大规模多模态模型lmms"></a> 2.1 指令跟随的大规模多模态模型（LMMs）</h3>
+<p>常见的多模态模型架构包括：</p>
+<ul>
+<li>⭐一个预训练的视觉骨干网络用于编码视觉特征、</li>
+<li>⭐一个预训练的大语言模型（LLM）用于理解用户指令并生成响应，</li>
+<li>⭐以及一个视觉-语言的跨模态连接器，用于将视觉编码器的输出对齐到语言模型的嵌入空间。</li>
+</ul>
+<p>如图1所示，LLaVA可能是现有LMM中最简单的架构。可选地，一些视觉重采样器（如Q-former）被用于减少视觉特征块的数量。</p>
+<p><img src="image-20241123214150206.png" alt></p>
+<center>图1. LLaVA-1.5 在广泛的11项任务上达到了最新的性能（顶部），同时具备高效的训练样本利用率（左侧），以及对LLaVA进行的简单改进（右侧）：采用MLP连接器，并引入面向学术任务的数据以及响应格式提示。</center>
+<p>通常，<strong>指令跟随</strong>的LMM训练包括两个阶段：</p>
+<ol>
+<li><strong>视觉-语言对齐预训练阶段</strong>：这一阶段利用图文配对数据将视觉特征与语言模型的词嵌入空间对齐。早期的工作使用了相对较少的图文配对数据（如∼60万或∼600万），而一些最新研究则在大规模图文配对数据（如1.29亿和14亿）上对视觉-语言连接器进行了预训练，以最大化LMM的性能。</li>
+<li><strong>视觉指令调整阶段</strong>：这一阶段对模型进行视觉指令微调，使其能够响应涉及视觉内容的用户多样化请求。</li>
+</ol>
+<p>此外，使用网格化方法处理高分辨率图像的研究在近期研究中也有涉及。</p>
+<h3 id="22-多模态指令跟随数据"><a class="markdownIt-Anchor" href="#22-多模态指令跟随数据"></a> 2.2 多模态指令跟随数据</h3>
+<p>⭐在自然语言处理（NLP）领域，研究表明指令<strong>跟随数据的质量</strong>对最终模型能力有显著影响。对于视觉指令调整，LLaVA是第一个利用仅文本的GPT-4扩展现有COCO数据集的研究，该扩展数据集包含三种类型的指令跟随数据：<strong>对话式问答</strong>、<strong>详细描述</strong>和<strong>复杂推理</strong>。LLaVA的数据处理流程还被用于扩展文本理解、大规模数据集以及区域级对话。</p>
+<p><font color="red">InstructBLIP通过结合学术任务导向的VQA数据集，进一步增强了模型的视觉能力。然而，研究发现这种简单的数据融合可能会导致模型过拟合于VQA数据集，从而难以在自然对话中表现出色。</font>⭐为了缓解这一问题，研究者提出利用LLaVA的数据处理流程将VQA数据集转换为对话风格。这种方法虽然在训练中证明了其有效性，但在数据扩展上引入了额外复杂性。</p>
+<p>在NLP中，FLAN家族表明，将大量学术语言任务添加到指令调整中可以有效提高模型的泛化能力。受到这一点的启发，<strong>本文探讨了多模态模型在自然对话任务和学术任务之间难以平衡的根本原因。</strong></p>
+<h2 id="第三章-方法"><a class="markdownIt-Anchor" href="#第三章-方法"></a> <strong>第三章 方法</strong></h2>
+<h3 id="31-预备知识"><a class="markdownIt-Anchor" href="#31-预备知识"></a> 3.1 预备知识</h3>
+<p>作为<strong>视觉指令调整</strong>的奠基性研究，LLaVA展示了卓越的视觉推理能力，在真实场景的视觉指令任务上超越了许多后续模型。LLaVA使用单个线性层将视觉特征投影到语言空间，并优化整个大语言模型（LLM）以适应视觉指令调整。<font color="red">然而，LLaVA在学术基准测试中表现欠佳，这些测试通常要求简短的回答（如单词），并且由于训练数据分布中缺少这类数据，LLaVA倾向于对是/否问题回答“是”。</font></p>
+<p>另一方面，InstructBLIP率先将<strong>学术任务导向的数据集</strong>（如VQA-v2）与LLaVA-Instruct结合，从而在VQA基准测试中实现了性能提升。InstructBLIP在1.29亿对图文配对数据上预训练了Qformer，并仅微调了面向指令的Qformer以适应视觉指令调整。然而，近期研究表明，在现实视觉对话任务中，它的表现不及LLaVA。具体而言，如表1a所示，InstructBLIP可能会过拟合于短答案的VQA训练集，即便在需要详细回答的请求中也如此。</p>
+<p><img src="image-20241123215231956.png" alt></p>
+<center>表1. 视觉输入示例，用于说明 (a) 多任务平衡的挑战，以及 (b) 不同格式提示的影响。示例中使用了相同的图像输入</center>
+<blockquote>
+<ul>
+<li><font color="YellowGreen">InstructBLIP加入学术任务导向的数据集VQA-v2，但是容易过拟合短答案的VQA训练集</font></li>
+</ul>
+</blockquote>
+<h3 id="32-响应格式提示"><a class="markdownIt-Anchor" href="#32-响应格式提示"></a> 3.2 响应格式提示</h3>
+<p>⭐研究发现，InstructBLIP等方法在短答案和长答案VQA任务之间难以平衡的原因主要有以下两点：</p>
+<ol>
+<li><strong>响应格式提示模糊</strong>：例如“Q: {问题} A: {答案}”的提示未能清晰指示所需的输出格式，这会使LLM在自然视觉对话中行为上过度偏向短答案。</li>
+<li><strong>缺乏对LLM的微调</strong>：这种问题由于InstructBLIP仅微调Qformer而加剧。它依赖Qformer的视觉输出来控制LLM生成的输出长度（如前缀调整），但由于Qformer的容量有限，相较于LLMs（如LLaMA），其能力可能不足。</li>
+</ol>
+<p>为了解决这些问题并使LLaVA能够更好地处理短答案，同时克服InstructBLIP的局限性，本文提出了一种单一的响应格式提示，明确指示输出格式。<font color="red">对于需要短答案的VQA问题，这种提示被添加在问题末尾，例如：“回答问题时仅使用一个单词或短语。”</font>我们发现，当LLM经过这样的提示微调后，LLaVA能够根据用户指令正确调整输出格式（见表1b），而无需借助ChatGPT对VQA答案进行额外处理，从而实现对多种数据源的扩展。如表2所示，仅通过在训练中包含VQAv2，LLaVA在MME上的性能显著提升，并超过了InstructBLIP 111分。</p>
+<p><img src="image-20241123220628020.png" alt="image-20241123220628020"></p>
+<center>表2. 关于数据、模型和分辨率的扩展结果。我们选择在 GQA、MME和 MM-Vet上进行实验，以分别测试 VQA 的短答案能力、输出格式化能力，以及自然视觉对话的代表性能力。
+    *注：GQA 的训练图像在训练中被观察到。</center>
+<blockquote>
+<ul>
+<li><font color="YellowGreen">对于需要短答案的VQA问题，添加在问题末尾一种提示，例如“回答问题时仅使用一个单词或短语。”</font></li>
+</ul>
+</blockquote>
+<h3 id="33-数据和模型的扩展"><a class="markdownIt-Anchor" href="#33-数据和模型的扩展"></a> 3.3 数据和模型的扩展</h3>
+<p><strong>⭐MLP视觉-语言连接器</strong>：受到自监督学习中从线性投影切换到MLP提高性能的启发，我们发现通过两层MLP提升视觉-语言连接器的表示能力，可以增强LLaVA的多模态能力，相较于原始线性投影方案效果更优。</p>
+<p><strong>⭐面向学术任务的数据</strong>：我们进一步加入了额外的学<strong>术任务导向数据集</strong>（如VQA、OCR和区域级感知数据），以多种方式增强模型能力（见表2）。具体来说，我们引入了InstructBLIP中使用的四个额外数据集：开放知识VQA（OKVQA，A-OKVQA）和OCR（OCRVQA，TextCaps）。将A-OKVQA转换为多选题，并使用特定的响应格式提示：“直接用选项的字母回答。”在仅使用InstructBLIP数据集子集的情况下，LLaVA已在所有三个任务上超越InstructBLIP，表明LLaVA的设计具有较高的效率。此外，我们发现进一步添加区域级VQA数据集（如Visual Genome，RefCOCO）可提升模型对细粒度视觉细节的定位能力。</p>
+<p><strong>⭐额外扩展</strong>：我们将输入图像分辨率扩展到336²，以便LLM能够清晰“看到”图像的细节。通过更换视觉编码器为CLIP-ViT-L-336px（CLIP支持的最高分辨率），并加入GQA数据集作为额外的视觉知识来源。同时，我们结合了ShareGPT数据并将LLM扩展到13B，在MM-Vet基准测试上的结果显示，当LLM扩展到13B时，性能提升最为显著，这表明基础LLM的能力对视觉对话任务至关重要。</p>
+<p>最终模型被命名为<strong>LLaVA-1.5</strong>（表2最后两行），显著优于原始的LLaVA。</p>
+<p><strong>计算成本</strong>：对于 LLaVA-1.5，我们使用相同的预训练数据集，并保持训练迭代和批量大小与 LLaVA的指令调整大致相同。由于图像输入分辨率提高到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>33</mn><msup><mn>6</mn><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">336^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord">3</span><span class="mord">3</span><span class="mord"><span class="mord">6</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>，LLaVA-1.5 的训练时间是 LLaVA 的 ∼2 倍：使用 8× A100 进行 ∼6 小时的预训练和 ∼20 小时的视觉指令调整。</p>
+<h3 id="34-高分辨率扩展"><a class="markdownIt-Anchor" href="#34-高分辨率扩展"></a> 3.4 高分辨率扩展</h3>
+<p><font color="red">在第3.3节中，我们观察到扩展输入图像分辨率可以提升模型能力。</font>然而，现有开源的CLIP视觉编码器的分辨率上限为336²，这使得通过简单替换视觉编码器(如第二节所示)来支持更高分辨率变得不可能。在本节中，我们提出了一种方法，将LMM扩展到更高分辨率，同时保持LLaVA-1.5的数据效率。</p>
+<p>当使用 ViT作为视觉编码器时，为了扩大分辨率，以前的方法大多选择<strong>位置嵌入插值</strong>并在微调期间使 ViT 主干适应新的分辨率。然而，这通常需要在大规模图像文本配对数据集上对模型进行微调，并将图像的分辨率限制为 LMM 在推理过程中可以接受的固定大小。</p>
+<p>⭐<font color="red">相反，如图 2 所示，我们通过将图像划分为多个小图像块（每个分辨率为视觉编码器的原始训练分辨率），并分别对其进行编码。获取每个小块的特征图后，将其合并为一个目标分辨率的单一大特征图，最终输入到LLM中。为了为LLM提供全局上下文并减少分割-编码-合并操作带来的伪影，我们额外将一个降采样图像的特征与合并特征图拼接。这种方法允许输入扩展到任意分辨率，同时保持LLaVA-1.5的数据效率。</font>我们将最终的模型命名为<strong>LLaVA-1.5-HD</strong>。</p>
+<p><img src="image-20241123223526201.png" alt></p>
+<center>图 2.LLaVA-1.5-HD。通过将图像分割成网格并独立编码，将 LLaVA-1.5 缩放到更高分辨率。这允许模型缩放到任何分辨率，而无需对 ViT 执行位置嵌入插值。我们还连接了下采样图像的特征，为LLM提供全局上下文</center>
+<h2 id="4-实验评估"><a class="markdownIt-Anchor" href="#4-实验评估"></a> 4. 实验评估</h2>
+<h3 id="41-基准测试"><a class="markdownIt-Anchor" href="#41-基准测试"></a> 4.1 基准测试</h3>
+<p>我们在一系列学术任务导向的基准测试和最近提出的指令跟随多模态模型（LMMs）的基准测试上对LLaVA-1.5进行了评估，共计12项基准测试。</p>
+<ol>
+<li><strong>学术任务导向基准测试</strong>：
+<ul>
+<li><strong>VQA-v2</strong> 和 <strong>GQA</strong>：评估模型在开放式短答案问题上的视觉感知能力。</li>
+<li><strong>VizWiz</strong>：包含8000张图像，用于评估模型在视觉障碍用户提出的问题上的零样本泛化能力。</li>
+<li><strong>ScienceQA</strong>（图像子集）：包含多选题，用于评估科学问答任务的零样本泛化能力。</li>
+<li><strong>TextVQA</strong>：测试模型在文字丰富的视觉问题中的表现。</li>
+</ul>
+</li>
+<li><strong>指令跟随LMM基准测试</strong>：
+<ul>
+<li><strong>POPE</strong>：评估模型在COCO中三个子集上的幻觉程度（随机样本、常见样本、对抗性样本），报告F1分数。</li>
+<li><strong>MME-Perception</strong>：通过是/否问题评估模型的视觉感知能力。</li>
+<li><strong>MMBench</strong> 和 <strong>MMBench-CN</strong>：分别测试模型在多选答案上的鲁棒性（中英文版本）。</li>
+<li><strong>SEED-Bench</strong>：评估模型在图像和视频上的表现（视频使用中间帧进行准确性测试）。</li>
+<li><strong>LLaVA-Bench-in-the-Wild</strong> 和 <strong>MM-Vet</strong>：评估模型在多样任务上的视觉对话能力，包括回答的正确性和有用性，使用GPT-4进行评估。</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p><font color="YellowGreen">12项基准测试</font></p>
+</blockquote>
+<h3 id="42-结果"><a class="markdownIt-Anchor" href="#42-结果"></a> 4.2 结果</h3>
+<p>我们发现，尽管LLaVA-1.5使用了比其他方法少得多的预训练和指令微调数据，但在12项基准测试中整体性能最佳。</p>
+<ul>
+<li>在指令跟随LMMs的所有基准测试中，LLaVA-1.5显著优于原始LLaVA。</li>
+<li>原始LLaVA在需要开放式短答案的学术数据集（如VQA-v2）上难以评估，而LLaVA-1.5在这类任务中表现优异。</li>
+</ul>
+<p>⭐<font color="red">当我们将LLaVA-1.5的图像分辨率扩展到448²（即LLaVA-1.5-HD），模型在所有基准测试中的整体性能进一步提升，特别是在需要感知图像细节的任务（例如MM-Vet中的OCR任务和LLaVA-Bench-in-the-Wild中的详细描述）。此外，我们发现，添加全局上下文能有效缓解图像分割与合并操作导致的伪影，并帮助模型更容易定位高分辨率特征中的相关区域（详见附录）。</font></p>
+<p>令人鼓舞的是，LLaVA-1.5凭借最简单的架构、学术级计算资源和公开数据，在基准测试中表现出色，为未来研究提供了一个完全可复现且经济高效的基准。这一结果表明，视觉指令调整在提升多模态模型（LMM）的能力方面起到了重要作用，同时也对传统观点提出了质疑，即LMM需要大量的视觉-语言对齐预训练。尽管视觉编码器（如 CLIP、OpenCLIP、EVA-CLIP等）已经在网络规模的图文配对数据上进行了预训练，LLaVA-1.5（即使是7B模型）依然超越了80B参数的IDEFICS模型——一个具有数十亿可训练参数的类似 Flamingo 的多模态模型。这也促使我们重新思考视觉采样器的益处以及额外大规模预训练对于多模态指令跟随能力的必要性。</p>
+<p><strong>全局上下文：</strong> 在更高分辨率下，我们将图像填充并调整为224²的单一图像，并将其与高分辨率特征拼接，以提供全局上下文。对7B模型的消融实验表明，全局上下文有效提升了三个验证基准测试的性能。</p>
+<p><img src="image-20241124154826631.png" alt></p>
+<blockquote>
+<ul>
+<li><font color="YellowGreen">LLaVA-1.5表现优于原始LLaVA</font></li>
+<li><font color="YellowGreen">将LLaVA-1.5的图像分辨率扩展到448²可以进一步提升性能，尤其是需要感知图像细节的任务</font></li>
+<li><font color="YellowGreen">添加全局上下文的操作能有效缓解图像分割与合并操作导致的伪影，并帮助模型更容易定位高分辨率特征中的相关区域。</font></li>
+<li><font color="YellowGreen">LLaVA的成功质疑了&quot;LMM需要大量的视觉-语言对齐预训练&quot;这一普遍观念。</font></li>
+</ul>
+</blockquote>
+<h3 id="43-新兴特性"><a class="markdownIt-Anchor" href="#43-新兴特性"></a> 4.3 新兴特性</h3>
+<p><strong>格式指令泛化</strong><br>
+尽管LLaVA-1.5只在有限的格式指令数据上进行过训练，但它能够泛化到其他类型的格式指令。例如：</p>
+<ul>
+<li><strong>VizWiz</strong>：要求模型在提供的内容不足以回答问题时输出“无法回答（Unanswerable）”。我们的响应格式提示（详见附录）能有效指导模型执行这一任务（无法回答的问题准确率从11.1%提升到67.8%）。</li>
+<li>我们还提供了一些定性示例，展示了LLaVA-1.5如何验证棘手问题（见表5）、以受限JSON格式响应（见表6）等，更多内容详见附录。</li>
+</ul>
+<p><img src="image-20241124154003720.png" alt></p>
+<center>表5. LLaVA-1.5 在被要求验证问题时，能够识别并回答棘手的问题。</center>
+<p><img src="image-20241124152746922.png" alt></p>
+<center>表6. LLaVA-1.5 能从图像中提取信息并按照所需格式作答，尽管与 GPT-4V 相比仍存在一些错误。</center>
+<p><strong>多语言多模态能力</strong><br>
+尽管LLaVA-1.5未针对多语言多模态指令进行微调（所有视觉指令包括VQA均为英文），但它仍然能够理解多语言指令。<font color="red">这部分归因于ShareGPT数据中包含的多语言文本指令。尽管ShareGPT不包含图像，其多语言对话的学习行为被成功迁移到了视觉对话中。</font>我们在MMBench-CN（中文）上定量评估了模型的泛化能力，LLaVA-1.5在该基准测试中优于Qwen-VL-Chat（63.6% vs 56.7%），尽管后者经过中文多模态指令微调，而LLaVA-1.5未曾进行此类微调。</p>
+<blockquote>
+<p><font color="YellowGreen">两种新兴特性:</font></p>
+<ul>
+<li><font color="YellowGreen">格式指令泛化:尽管LLaVA-1.5只在有限的格式指令数据上进行过训练，但它能够泛化到其他类型的格式指令</font></li>
+<li><font color="YellowGreen">多语言多模态能力:尽管LLaVA-1.5未针对多语言多模态指令进行微调，但它仍然能够理解多语言指令</font></li>
+</ul>
+</blockquote>
+<h3 id="44-基于llm选择的消融实验"><a class="markdownIt-Anchor" href="#44-基于llm选择的消融实验"></a> 4.4 基于LLM选择的消融实验</h3>
+<p>NLP研究表明，基础LLM的能力会影响其指令微调模型的表现。本文探索了两大类LLM对最终模型多模态能力的贡献：</p>
+<ul>
+<li><strong>基于LLaMA的</strong>（Vicuna-v1.1、Vicuna-v1.3）。Vicuna-v1.3 和 Vicuna-v1.5 使用相同的~150K ShareGPT数据</li>
+<li><strong>基于LLaMA-2的</strong>（Vicuna-v1.5、LLaMA-2-Chat）。与仅通过监督指令微调 (SFT) 进行训练的 Vicuna 系列不同，LLaMA-2Chat 通过人类反馈强化学习 (RLHF) 进行了进一步优化</li>
+</ul>
+<p>我们在图 3 中可视化了这些变体的相对性能。</p>
+<p><img src="image-20241124154456290.png" alt></p>
+<center>图 3. 有关LLM选择的消融。数据点代表每个数据集的最佳性能变体的相对性能。</center>
+<p>实验结果表明：</p>
+<ul>
+<li><strong>Vicuna-v1.5</strong> 的整体性能最佳，且基于LLaMA-2的模型普遍优于基于LLaMA-1的模型，<strong>这表明了基础语言模型的重要性</strong>。 MMBench-CN上的结果进一步证明了这一点：尽管Vicuna-v1.3和v1.5使用相同的ShareGPT数据进行指令调优，但Vicuna-v1.3泛化到中文的性能明显差于Vicuna-v1.3。 v1.5。</li>
+<li><strong>语言指令微调对特定任务的能力提升至关重要</strong>，例如，尽管LLaMA-2-Chat和Vicuna-v1.5在MMBench上的性能几乎相同，但LLaMA-2-Chat在MMBench-CN的泛化能力明显弱于Vicuna-v1.5，这可能是因为LLaMA-2-Chat的指令微调数据以英语为主，而ShareGPT数据包含更多的多语言内容。此外，TextVQA 要求模型能够识别图像中的文本字符，并处理 OCR 引擎的噪声输出；这种噪音可能在 ShareGPT 数据中更常见，这些数据是通过 ChatGPT 的日常使用在wild收集的。</li>
+</ul>
+<blockquote>
+<ul>
+<li><font color="YellowGreen">基础LLM的能力会影响其指令微调模型的表现</font></li>
+<li><font color="YellowGreen">语言指令微调对特定任务的能力提升至关重要</font></li>
+</ul>
+</blockquote>
+<h2 id="5-大规模多模态模型的开放性问题"><a class="markdownIt-Anchor" href="#5-大规模多模态模型的开放性问题"></a> 5. 大规模多模态模型的开放性问题</h2>
+<p>在成功扩展LLaVA-1.5的基础上，我们针对多模态模型中的一些开放性问题进行了额外研究，研究内容基于LLaVA-1.5的<strong>模型设计</strong>和<strong>数据组合</strong>。</p>
+<h3 id="51-数据效率"><a class="markdownIt-Anchor" href="#51-数据效率"></a> 5.1 数据效率</h3>
+<p>尽管LLaVA-1.5相比于InstructBLIP等方法在数据效率方面表现优异，其训练成本仍然是原始LLaVA的两倍。为此，我们通过随机对LLaVA-1.5的训练数据混合进行抽样（采样比例从10%到50%不等）来进一步研究数据效率的改进潜力，并将不同采样变体的相对性能可视化在图4中。</p>
+<p><img src="image-20241124163628546.png" alt></p>
+<center>图 4. 数据效率的消融。数据点代表每个数据集的最佳性能变体的相对性能。</center>
+<ul>
+<li><strong>全数据混合提供了最佳知识覆盖</strong>，使模型能够达到最优性能。然而，令人意外的是，即使仅使用50%的数据样本，模型依然保持了超过98%的完整数据集性能。这表明数据效率方面仍有进一步提升的空间。</li>
+<li>当数据集缩减至50%时，模型在MMBench、ScienceQA和POPE上的性能完全没有下降，甚至在MMBench上有所提升。同样，当数据从50%进一步缩减至30%时，模型性能依然保持稳定。这些结果表明，针对多模态模型的“少即是多”策略可能具有应用潜力。</li>
+</ul>
+<blockquote>
+<p><font color="YellowGreen">50%的原数据样本在<strong>数据混合</strong>的策略下，性能完全没有下降，表明对多模态模型的“<strong>少即是多</strong>”策略可能具有应用潜力。</font></p>
+</blockquote>
+<h3 id="52-重新审视lmm中的幻觉问题"><a class="markdownIt-Anchor" href="#52-重新审视lmm中的幻觉问题"></a> 5.2 重新审视LMM中的幻觉问题</h3>
+<p><strong>幻觉</strong>是LLM和LMM需要解决的重要问题。在LMM中，模型的幻觉通常被归因于训练数据中的错误或虚假的内容。例如，LLaVA-Instruct中用于详细描述的数据可能包含少量虚假内容，人们认为在此类数据上训练可能导致模型在回答“详细描述图像”时出现幻觉。然而，我们发现，当模型输入分辨率扩展到更高的水平（如448²）时，这种幻觉现象显著减少。</p>
+<p><font color="red">这一发现很有趣，因为它表明LMM对训练数据中少量错误可能具有一定的鲁棒性。然而，当输入分辨率不足以让模型区分训练数据中的所有细节，而这类超出模型能力范围的数据量达到足够大时，模型就会学习到幻觉。这进一步表明，改进数据标注的细节和模型处理这些细节的能力之间需要找到平衡点。</font>我们希望这一发现能够为未来在处理幻觉问题以及模型与数据的扩展研究中提供参考。</p>
+<blockquote>
+<p><font color="YellowGreen">当模型输入分辨率扩展到更高的水平（如448²）时，可以显著减少幻觉现象。我们认为，当输入分辨率不足以让模型区分训练数据中的所有细节，而这类超出模型能力范围的数据量达到足够大时，模型就会学习到幻觉。所以需要在改进数据标注的细节和模型处理这些细节的能力之间需要找到平衡点</font></p>
+</blockquote>
+<h3 id="53-组合能力"><a class="markdownIt-Anchor" href="#53-组合能力"></a> 5.3 组合能力</h3>
+<p>我们展示了LLaVA-1.5的一些有趣的组合能力：<font color="red">模型在一组独立任务上的训练，能够泛化到需要这些能力组合的新任务，而无需显式联合训练。</font>以下是部分发现：</p>
+<ul>
+<li>首先，经过ShareGPT数据的训练后，模型在视觉对话中展现出更强的语言能力，包括多模态的多语言能力（详见4.3节）。此外，模型在视觉对话中能够提供更长且更详细的回答。</li>
+<li>其次，来自学术任务导向数据集的额外视觉知识增强了LLaVA-1.5在视觉对话中对视觉内容的准确描述能力，这在MM-Vet和LLaVA-Wild的结果中得到了定量验证（见表4）。</li>
+</ul>
+<p>然而，对于某些需要特定能力组合的任务，模型的表现仍难以达到理想水平。例如，虽然模型能够在VQA中正确回答某物体的属性，但在对整个图像进行详细描述时，却未必能准确描述该物体的属性。此外，在某些外语（如韩语）对话中，模型的表现依然较弱（详见附录）。</p>
+<p>这些发现表明，通过利用LMM的组合能力，可以在不显著增加数据的情况下提高模型性能，而无需穷尽所有任务的组合。然而，这一领域仍需进一步研究，深入理解LMM组合能力的机制可以进一步提升LLaVA-1.5的能力和数据效率。</p>
+<blockquote>
+<p><font color="YellowGreen">LLaVA-1.5有一些有趣的组合能力：模型在一组独立任务上的训练，能够泛化到需要这些能力组合的新任务，而无需显式联合训练。所以在一个任务上训练可能会对另一个任务产生提升效果</font></p>
+</blockquote>
+<h2 id="6-结论"><a class="markdownIt-Anchor" href="#6-结论"></a> 6. 结论</h2>
+<p>本文针对大规模多模态模型（LMM）的设计问题进行了探索，提出了一种简单、高效且数据利用率高的基准模型——LLaVA-1.5。我们对视觉指令调整中的开放性问题进行了研究，扩展了LMM对高分辨率输入的适应能力，并在模型幻觉和组合能力等方面得出了一些有趣的发现。我们希望这些改进的、易于复现的基准以及新发现能够为未来开源LMM的研究提供参考。</p>
+<p><strong>局限性</strong></p>
+<p>尽管LLaVA-1.5展示了出色的结果，但仍存在以下局限性：</p>
+<ol>
+<li><strong>训练时长</strong>：对于高分辨率图像，LLaVA-1.5的训练需要更长时间。虽然视觉重采样器可以减少视觉特征块的数量，但目前这些方法无法像LLaVA一样在相同训练数据量下实现高效收敛，可能是因为重采样器具有更多可训练参数。开发一种高效的视觉重采样器可能为未来扩展指令跟随多模态模型铺平道路。</li>
+<li><strong>多图像处理能力</strong>：LLaVA-1.5尚未支持多图像输入处理，这主要是由于缺乏相应的指令跟随数据以及上下文长度的限制。</li>
+<li><strong>特定领域的问题解决能力</strong>：尽管LLaVA-1.5在处理复杂指令方面表现出色，但在某些领域的问题解决能力仍然有限。这可以通过更强大的语言模型和高质量的视觉指令调整数据来改进。</li>
+<li><strong>幻觉问题</strong>：尽管LLaVA-1.5的幻觉倾向已显著降低，但它并非完全免疫，仍可能产生虚假信息。因此，在关键应用场景（如医疗领域）中使用时需要谨慎。</li>
+</ol>
+<h1 id="附录"><a class="markdownIt-Anchor" href="#附录"></a> 附录</h1>
+<p>本附录的结构如下:</p>
+<ul>
+<li>在A 节中，我们展示了<strong>LLaVA-1.5-HD</strong>（A.1 节）、<strong>数据和提示</strong>（A.2 节）以及<strong>超参数</strong>（A.3 节）的实现细节。</li>
+<li>在B 节中，我们为<strong>回答格式提示</strong>（B.1 节）、<strong>写作能力</strong>（B.2 节）提供更多定性结果。</li>
+<li>在C 节中，我们更详细地讨论了限制。</li>
+</ul>
+<h2 id="a-实现细节"><a class="markdownIt-Anchor" href="#a-实现细节"></a> A. 实现细节</h2>
+<h3 id="a1-llava-15-hd"><a class="markdownIt-Anchor" href="#a1-llava-15-hd"></a> A.1 LLaVA-1.5-HD</h3>
+<h4 id="a11-预处理"><a class="markdownIt-Anchor" href="#a11-预处理"></a> A.1.1 预处理</h4>
+<p><strong>概述</strong>：<br>
+我们使用 CLIP-ViT-L-14（224²）作为基础图像编码器。首先将输入图像调整到目标分辨率，以有效捕获其细节，并将图像分割为224²的网格。所有224²的图像块分别通过CLIP图像编码器编码，其特征随后合并为一个大的特征图。之后，我们对结果特征图进行后处理，形成一个展平的特征列表，并将其与固定分辨率图像的特征拼接，以提供全局上下文。</p>
+<p><strong>目标分辨率选择</strong>：<br>
+我们预定义了一组支持的分辨率，最大支持六个网格（例如1×1、1×2、1×3、1×4、1×5、1×6、2×2、2×3以及它们的转置），允许最大分辨率为672×448（或448×672）。分辨率选择遵循两个标准：</p>
+<ol>
+<li><strong>细节保留</strong>：选定的分辨率应尽可能保留原始图像的细节。</li>
+<li><strong>资源效率</strong>：分辨率不应过大，以避免不必要的像素和内存消耗（例如，不应对224²的输入选择448²的分辨率）。</li>
+</ol>
+<p><strong>后处理</strong>：<br>
+我们进行了三步后处理，以确保最终特征能够被语言模型有效处理：</p>
+<ol>
+<li><strong>移除填充</strong>：删除仅对应于填充部分的特征，减少语言模型处理的视觉标记数量，提高效率。</li>
+<li><strong>行尾标记</strong>：为每行特征末尾添加一个特殊标记，明确指示图像的形状。与使用固定分辨率的原始LLaVA和LLaVA-1.5不同，我们现在使用可变分辨率，这种指示能让语言模型捕获每个样本的确切图像形状和大小。</li>
+<li><strong>展平</strong>：最终将图像特征图展平成一维特征，并与语言标记特征一起输入语言模型。</li>
+</ol>
+<h4 id="a12-训练"><a class="markdownIt-Anchor" href="#a12-训练"></a> A.1.2 训练</h4>
+<p>由于视觉特征在224²的原始分辨率上计算，因此我们无需额外的预训练。同时，对于视觉投影层，我们也未进行额外的高分辨率预训练，而是直接在更高分辨率图像上进行视觉指令微调。</p>
+<h3 id="a2-数据"><a class="markdownIt-Anchor" href="#a2-数据"></a> A.2 数据</h3>
+<p>最终的训练数据混合包含多种数据集：VQ、OCR、区域级VQA、视觉对话和语言对话数据。我们采用多种策略来降低训练成本并提高效率，具体如下：</p>
+<ol>
+<li>对于所有VQA数据集，将同一训练图像上的问答对合并为一个对话。</li>
+<li>对于ShareGPT，我们过滤掉无效对话（参见Vicuna）。与Vicuna不同，超过2048 tokens的长对话将被截断，而不是拆分为多个对话。最终保留约4万条对话。</li>
+<li>对于A-OKVQA，每个问答对被增强k次，其中k为每个问题的选项数，以平衡多选数据的不足。</li>
+<li>从OCRVQA中抽样8万条对话。</li>
+<li>对于Visual Genome，从每张有附加注释的图像中随机抽取10条注释。</li>
+<li>对于RefCOCO，将对话分割为包含少于10个对话的片段。</li>
+<li>我们观察到语言对话往往比视觉对话更长。为每个批次，只从单一模态中抽样对话，这加速了训练25%，且对最终结果无影响。</li>
+</ol>
+<p>所有数据集的分割被合并并以相同的概率进行采样。表7展示了最终指令跟随数据混合的响应格式提示，表8列出了每个评估基准测试使用的响应格式提示。</p>
+<p><img src="image-20241124165058498.png" alt></p>
+<center>表 7. LLaVA-1.5 的指令跟随数据混合。</center>
+<p><img src="image-20241124165130134.png" alt></p>
+<center>表 8. 评估的响应格式提示。</center>
+<h3 id="a3-超参数"><a class="markdownIt-Anchor" href="#a3-超参数"></a> A.3 超参数</h3>
+<p>最新的Vicuna v1.5被用作基础LLM。LLaVA-1.5使用与原始LLaVA相同的超参数集，但在预训练阶段将学习率减半，因为我们使用了MLP投影层而不是原始的线性投影层设计。表9展示了第一阶段视觉-语言对齐预训练和第二阶段视觉指令调整的训练超参数。评估时使用贪婪解码以确保可复现性。</p>
+<p><img src="image-20241124165304847.png" alt></p>
+<center>表 9. LLaVA-1.5 的超参数与原始 LLaVA 相同，只是由于使用了 MLP 投影层，我们将预训练中的学习率减半。</center>
+<h2 id="b-定性结果"><a class="markdownIt-Anchor" href="#b-定性结果"></a> B. 定性结果</h2>
+<h3 id="b1-响应格式提示"><a class="markdownIt-Anchor" href="#b1-响应格式提示"></a> B.1 响应格式提示</h3>
+<p>我们展示了LLaVA-1.5在不同没见过的响应格式提示下的泛化能力。</p>
+<p><img src="image-20241124165414048.png" alt></p>
+<center>表 10. LLaVA-1.5 学习根据用户的请求格式化响应，概括为未见过的格式指令，并可以根据用户的请求更改对话中的响应格式</center>
+<p>首先，如表10所示，LLaVA-1.5可以根据用户的请求，以不同粒度提供细节。当用户要求时，它还能在对话中切换响应格式。</p>
+<p>其次，我们提供了一个受限提示的示例，生成用于Stable Diffusion模型的提示词。表12展示了生成动漫风格提示词的示例。</p>
+<h3 id="b2-组合能力"><a class="markdownIt-Anchor" href="#b2-组合能力"></a> B.2 组合能力</h3>
+<p>我们展示了LLaVA-1.5的组合能力的定性示例。如图5所示，LLaVA-1.5能够参与多语言视觉对话，并根据用户的输入语言调整输出语言，尽管模型未经过多语言视觉指令数据的训练。我们推测，这种能力来源于视觉对话（仅限英文）和文本ShareGPT数据（多语言）的组合能力。然而，对于某些语言（例如韩语），模型可能仍然存在错误（详见红色标注）。</p>
+<p><img src="image-20241124172600014.png" alt></p>
+<center>图 5. 写作能力：多语言视觉对话。当根据数据（仅限英语）和纯文本 ShareGPT 数据（多语言）对视觉指令进行训练时，LLaVA-1.5 可推广到多语言视觉对话。但是，某些语言仍然可能存在错误（例如韩语，错误标记为红色）。</center>
+<p>此外，在表11中，我们展示了训练中加入ShareGPT数据后，观察到的另一种组合能力。LLaVA-1.5在具有视觉输入的写作任务中能够提供更加详细且基于视觉的回答，相比原始LLaVA有明显提升。</p>
+<p><img src="image-20241124172451507.png" alt></p>
+<center>表 11.LLaVA-1.5 为使用视觉输入的写作任务提供了比 LLaVA 更详细、基于视觉的响应。</center>
+<p><img src="image-20241124172520609.png" alt></p>
+<center>表 12. 稳定扩散的约束提示生成。相应的组件用颜色标记。</center>
+<h2 id="c-局限性"><a class="markdownIt-Anchor" href="#c-局限性"></a> C. 局限性</h2>
+<p>尽管LLaVA-1.5展示了出色的结果，但仍存在以下局限性需要注意：</p>
+<ul>
+<li><strong>训练效率</strong>：LLaVA-1.5使用完整的图像特征块，这可能会延长每次训练迭代的时间。虽然视觉重采样器能够减少视觉特征块的数量，但目前它们在相同训练数据量下尚无法像LLaVA一样高效地收敛，这可能是由于重采样器的可训练参数更多。开发一种样本高效的视觉重采样器可能为未来扩展指令跟随多模态模型提供新的方向。</li>
+<li><strong>缺乏多图像处理能力</strong>：LLaVA-1.5目前无法处理多图像输入，这主要是由于缺乏相关的指令跟随数据以及上下文长度的限制。</li>
+<li><strong>特定领域能力的不足</strong>：尽管LLaVA-1.5在复杂指令的跟随能力上表现出色，但在某些特定领域（如医学）的问题解决能力仍显不足。要进一步提升这些领域的能力，需要更强大的语言模型和高质量、有针对性的视觉指令微调数据。</li>
+<li><strong>幻觉问题</strong>：尽管LLaVA-1.5显著降低了产生幻觉的倾向，但它仍可能出现虚假信息。因此，在一些关键应用场景（如医疗或法律领域）中使用时，仍需谨慎。</li>
+<li><strong>多语言能力的局限性</strong>：虽然LLaVA-1.5具备一定的多语言对话能力（详见附录B），但其在非英语语言（例如韩语）上的表现仍不够理想。这表明模型需要进一步增强多语言支持，以更好地服务全球用户。</li>
+</ul>
+<p>这些局限性指出了未来研究的方向，包括更高效的训练策略、支持多图像输入的能力提升、特定领域问题解决能力的优化以及更强的多语言泛化能力。我们希望这些讨论为未来的研究提供参考。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">HUI</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/12/10/Multimodel/LLaVA-V1.5/">http://example.com/2024/12/10/Multimodel/LLaVA-V1.5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">HUI</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/image-20241123214150206.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/12/10/Multimodel/BiRD/" title="MICCAI2024(2)-BIRD"><img class="cover" src="/img/image-20241104164541942.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">MICCAI2024(2)-BIRD</div></div></a></div><div class="next-post pull-right"><a href="/2024/12/10/Multimodel/LLaVA/" title="LLaVA(1)-Visual Instruction Tuning"><img class="cover" src="/img/image-20241122154508143.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">LLaVA(1)-Visual Instruction Tuning</div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><span id="switch-btn"></span><span class="second-comment">Disqus</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="disqus_thread"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/87788970_p0_master1200.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">HUI</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">58</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/kalabiqlx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:kalabiqlx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#llava-improved-baselines-with-visual-instruction-tuningv15"><span class="toc-text"> LLaVA-Improved Baselines with Visual Instruction Tuning(V1.5)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%91%98%E8%A6%81"><span class="toc-text"> 摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%BC%95%E8%A8%80"><span class="toc-text"> 1. 引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="toc-text"> 2. 相关工作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#21-%E6%8C%87%E4%BB%A4%E8%B7%9F%E9%9A%8F%E7%9A%84%E5%A4%A7%E8%A7%84%E6%A8%A1%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8Blmms"><span class="toc-text"> 2.1 指令跟随的大规模多模态模型（LMMs）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#22-%E5%A4%9A%E6%A8%A1%E6%80%81%E6%8C%87%E4%BB%A4%E8%B7%9F%E9%9A%8F%E6%95%B0%E6%8D%AE"><span class="toc-text"> 2.2 多模态指令跟随数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0-%E6%96%B9%E6%B3%95"><span class="toc-text"> 第三章 方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#31-%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86"><span class="toc-text"> 3.1 预备知识</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#32-%E5%93%8D%E5%BA%94%E6%A0%BC%E5%BC%8F%E6%8F%90%E7%A4%BA"><span class="toc-text"> 3.2 响应格式提示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#33-%E6%95%B0%E6%8D%AE%E5%92%8C%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%89%A9%E5%B1%95"><span class="toc-text"> 3.3 数据和模型的扩展</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#34-%E9%AB%98%E5%88%86%E8%BE%A8%E7%8E%87%E6%89%A9%E5%B1%95"><span class="toc-text"> 3.4 高分辨率扩展</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%AE%9E%E9%AA%8C%E8%AF%84%E4%BC%B0"><span class="toc-text"> 4. 实验评估</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#41-%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95"><span class="toc-text"> 4.1 基准测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#42-%E7%BB%93%E6%9E%9C"><span class="toc-text"> 4.2 结果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#43-%E6%96%B0%E5%85%B4%E7%89%B9%E6%80%A7"><span class="toc-text"> 4.3 新兴特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#44-%E5%9F%BA%E4%BA%8Ellm%E9%80%89%E6%8B%A9%E7%9A%84%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C"><span class="toc-text"> 4.4 基于LLM选择的消融实验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%A4%A7%E8%A7%84%E6%A8%A1%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%BC%80%E6%94%BE%E6%80%A7%E9%97%AE%E9%A2%98"><span class="toc-text"> 5. 大规模多模态模型的开放性问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#51-%E6%95%B0%E6%8D%AE%E6%95%88%E7%8E%87"><span class="toc-text"> 5.1 数据效率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#52-%E9%87%8D%E6%96%B0%E5%AE%A1%E8%A7%86lmm%E4%B8%AD%E7%9A%84%E5%B9%BB%E8%A7%89%E9%97%AE%E9%A2%98"><span class="toc-text"> 5.2 重新审视LMM中的幻觉问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#53-%E7%BB%84%E5%90%88%E8%83%BD%E5%8A%9B"><span class="toc-text"> 5.3 组合能力</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E7%BB%93%E8%AE%BA"><span class="toc-text"> 6. 结论</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-text"> 附录</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#a-%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="toc-text"> A. 实现细节</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#a1-llava-15-hd"><span class="toc-text"> A.1 LLaVA-1.5-HD</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#a11-%E9%A2%84%E5%A4%84%E7%90%86"><span class="toc-text"> A.1.1 预处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#a12-%E8%AE%AD%E7%BB%83"><span class="toc-text"> A.1.2 训练</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#a2-%E6%95%B0%E6%8D%AE"><span class="toc-text"> A.2 数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#a3-%E8%B6%85%E5%8F%82%E6%95%B0"><span class="toc-text"> A.3 超参数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#b-%E5%AE%9A%E6%80%A7%E7%BB%93%E6%9E%9C"><span class="toc-text"> B. 定性结果</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#b1-%E5%93%8D%E5%BA%94%E6%A0%BC%E5%BC%8F%E6%8F%90%E7%A4%BA"><span class="toc-text"> B.1 响应格式提示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#b2-%E7%BB%84%E5%90%88%E8%83%BD%E5%8A%9B"><span class="toc-text"> B.2 组合能力</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#c-%E5%B1%80%E9%99%90%E6%80%A7"><span class="toc-text"> C. 局限性</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/12/10/Multimodel/MM-LLMs-survey/" title="MM-LLMs综述(腾讯)"><img src="/img/image-20241114140927375.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MM-LLMs综述(腾讯)"/></a><div class="content"><a class="title" href="/2024/12/10/Multimodel/MM-LLMs-survey/" title="MM-LLMs综述(腾讯)">MM-LLMs综述(腾讯)</a><time datetime="2024-12-10T12:40:00.000Z" title="发表于 2024-12-10 20:40:00">2024-12-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/12/10/Multimodel/BiRD/" title="MICCAI2024(2)-BIRD"><img src="/img/image-20241104164541942.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MICCAI2024(2)-BIRD"/></a><div class="content"><a class="title" href="/2024/12/10/Multimodel/BiRD/" title="MICCAI2024(2)-BIRD">MICCAI2024(2)-BIRD</a><time datetime="2024-12-10T12:36:38.000Z" title="发表于 2024-12-10 20:36:38">2024-12-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/12/10/Multimodel/LLaVA-V1.5/" title="LLaVA(2)-Improved Baselines with Visual Instruction Tuning"><img src="/img/image-20241123214150206.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLaVA(2)-Improved Baselines with Visual Instruction Tuning"/></a><div class="content"><a class="title" href="/2024/12/10/Multimodel/LLaVA-V1.5/" title="LLaVA(2)-Improved Baselines with Visual Instruction Tuning">LLaVA(2)-Improved Baselines with Visual Instruction Tuning</a><time datetime="2024-12-10T12:30:38.000Z" title="发表于 2024-12-10 20:30:38">2024-12-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/12/10/Multimodel/LLaVA/" title="LLaVA(1)-Visual Instruction Tuning"><img src="/img/image-20241122154508143.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLaVA(1)-Visual Instruction Tuning"/></a><div class="content"><a class="title" href="/2024/12/10/Multimodel/LLaVA/" title="LLaVA(1)-Visual Instruction Tuning">LLaVA(1)-Visual Instruction Tuning</a><time datetime="2024-12-10T12:25:38.000Z" title="发表于 2024-12-10 20:25:38">2024-12-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/12/10/Multimodel/PMC-CLIP/" title="MICCAI2024(1)-PMC-CLIP"><img src="/img/image-20241111141331709.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MICCAI2024(1)-PMC-CLIP"/></a><div class="content"><a class="title" href="/2024/12/10/Multimodel/PMC-CLIP/" title="MICCAI2024(1)-PMC-CLIP">MICCAI2024(1)-PMC-CLIP</a><time datetime="2024-12-10T12:12:38.000Z" title="发表于 2024-12-10 20:12:38">2024-12-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('/img/image-20241123214150206.png')"><div id="footer-wrap"><div class="copyright">&copy;2024 By HUI</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="chat-btn" type="button" title="聊天"><i class="fas fa-sms"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>(() => {
+  const initValine = () => {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  const loadValine = async () => {
+    if (typeof Valine === 'function') initValine()
+    else {
+      await getScript('https://cdn.jsdelivr.net/npm/valine@1.5.1/dist/Valine.min.js')
+      initValine()
+    }
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script><script>(() => {
+  const disqus_config = function () {
+    this.page.url = 'http://example.com/2024/12/10/Multimodel/LLaVA-V1.5/'
+    this.page.identifier = '/2024/12/10/Multimodel/LLaVA-V1.5/'
+    this.page.title = 'LLaVA(2)-Improved Baselines with Visual Instruction Tuning'
+  }
+
+  const disqusReset = () => {
+    window.DISQUS && window.DISQUS.reset({
+      reload: true,
+      config: disqus_config
+    })
+  }
+
+  btf.addGlobalFn('themeChange', disqusReset, 'disqus')
+
+  const loadDisqus = () =>{
+    if (window.DISQUS) disqusReset()
+    else {
+      const script = document.createElement('script')
+      script.src = 'https://.disqus.com/embed.js'
+      script.setAttribute('data-timestamp', +new Date())
+      document.head.appendChild(script)
+    }
+  }
+
+  const getCount = async() => {
+    try {
+      const eleGroup = document.querySelector('#post-meta .disqus-comment-count')
+      if (!eleGroup) return
+      const cleanedLinks = eleGroup.href.replace(/#post-comment$/, '')
+
+      const res = await fetch(`https://disqus.com/api/3.0/threads/set.json?forum=&api_key=&thread:link=${cleanedLinks}`,{
+        method: 'GET'
+      })
+      const result = await res.json()
+
+      const count = result.response.length ? result.response[0].posts : 0
+      eleGroup.textContent = count
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  if ('Valine' === 'Disqus' || !false) {
+    if (false) btf.loadComment(document.getElementById('disqus_thread'), loadDisqus)
+    else {
+      loadDisqus()
+      GLOBAL_CONFIG_SITE.isPost && getCount()
+    }
+  } else {
+    window.loadOtherComment = loadDisqus
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>
